@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map>
-	<dimension width="14" height="10"/>
-	<cells>
-		<block row="1" column="2"/>
-		<block row="1" column="5" item="door"/>
-		<block row="4" column="5" item="kick"/>
-	</cells>
-</map>
