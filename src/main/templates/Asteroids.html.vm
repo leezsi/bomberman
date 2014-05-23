@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>$title</title>
+</head>
+<body>
+<object type="application/x-java-applet" height="$height" width="$width" border="2">
+  <param name="code" value="$appletClass" />
+  <param name="archive" value="$jarFile" />
+  <param name="java_arguments" value="$javaArgs"/>
+  <param name="gameClass" value="$gameClass"/>
+  Applet failed to run.  No Java plug-in was found.
+</object>
+</body>
+</html>

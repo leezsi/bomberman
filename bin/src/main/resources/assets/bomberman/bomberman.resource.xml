@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+	<animation name="bomberman-front" meantime="0.1" width="50"
+		height="50">
+		<ref to="bomberman-front1" />
+		<ref to="bomberman-front2" />
+		<ref to="bomberman-front3" />
+	</animation>
+
+	<animation name="bomberman-back" meantime="0.1" width="50"
+		height="50">
+		<ref to="bomberman-back1" />
+		<ref to="bomberman-back2" />
+		<ref to="bomberman-back3" />
+	</animation>
+
+	<animation name="bomberman-right" meantime="0.1" width="50"
+		height="50">
+		<ref to="bomberman-right1" />
+		<ref to="bomberman-right2" />
+		<ref to="bomberman-right3" />
+	</animation>
+
+	<animation name="bomberman-left" meantime="0.1" width="50"
+		height="50">
+		<ref to="bomberman-left1" />
+		<ref to="bomberman-left2" />
+		<ref to="bomberman-left3" />
+	</animation>
+
+	<animation name="bomberman-die" meantime="0.15" width="50"
+		height="50">
+		<ref to="bomberman-die1" />
+		<ref to="bomberman-die2" />
+		<ref to="bomberman-die3" />
+		<ref to="bomberman-die4" />
+		<ref to="bomberman-die5" />
+		<ref to="bomberman-die6" />
+	</animation>
+
+	<sprites img="bomberman.png">
+		<sprite name="bomberman-front1"  width="50"
+		height="50">
+			<crop x="2" y="0" width="13" height="19" />
+		</sprite>
+		<sprite name="bomberman-front2">
+			<crop x="16" y="0" width="13" height="19" />
+		</sprite>
+		<sprite name="bomberman-front3">
+			<crop x="30" y="0" width="13" height="19" />
+		</sprite>
+
+		<sprite name="bomberman-back1">
+			<crop x="2" y="19" width="13" height="19" />
+		</sprite>
+		<sprite name="bomberman-back2">
+			<crop x="16" y="19" width="13" height="19" />
+		</sprite>
+		<sprite name="bomberman-back3">
+			<crop x="30" y="19" width="13" height="19" />
+		</sprite>
+
+		<sprite name="bomberman-right1">
+			<crop x="42" y="0" width="13" height="20" />
+		</sprite>
+		<sprite name="bomberman-right2">
+			<crop x="54" y="0" width="14" height="20" />
+		</sprite>
+		<sprite name="bomberman-right3">
+			<crop x="67" y="0" width="14" height="20" />
+		</sprite>
+
+		<sprite name="bomberman-left1">
+			<crop x="42" y="19" width="13" height="19" />
+		</sprite>
+		<sprite name="bomberman-left2">
+			<crop x="54" y="19" width="14" height="19" />
+		</sprite>
+		<sprite name="bomberman-left3">
+			<crop x="68" y="19" width="14" height="19" />
+		</sprite>
+
+		<sprite name="bomberman-die1">
+			<crop x="81" y="0" width="14" height="22" />
+		</sprite>
+		<sprite name="bomberman-die2">
+			<crop x="95" y="0" width="14" height="22" />
+		</sprite>
+		<sprite name="bomberman-die3">
+			<crop x="110" y="0" width="16" height="22" />
+		</sprite>
+		<sprite name="bomberman-die4">
+			<crop x="126" y="0" width="15" height="22" />
+		</sprite>
+		<sprite name="bomberman-die5">
+			<crop x="141" y="0" width="15" height="22" />
+		</sprite>
+		<sprite name="bomberman-die6">
+			<crop x="157" y="0" width="15" height="22" />
+		</sprite>
+
+	</sprites>
+</resource>
