@@ -13,7 +13,8 @@ import ar.edu.unq.bomberman.COLITION_GROUPS;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
-import ar.edu.unq.bomberman.player.events.PlayerLossLife;
+import ar.edu.unq.bomberman.level.items.Item;
+import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 public class Player extends GameComponent<GameMap> {
 
@@ -23,11 +24,18 @@ public class Player extends GameComponent<GameMap> {
 	@Property("cell.height")
 	protected static double CELL_HEIGHT;
 
-	private PlayerPositionState positionState = PlayerPositionState.STAY;
+	private PlayerPositionState positionState = PlayerPositionState.STAY
+			.initialize(CELL_WIDTH, CELL_HEIGHT);
 
 	private int remaindingBombs;
 
-	private final int explosionSize = 1;
+	private int explosionSize = 1;
+
+	private boolean canPutBomb = true;
+
+	private double initialX;
+
+	private double initialY;
 
 	public void setPositionState(final PlayerPositionState positionState) {
 		this.positionState = positionState;
@@ -36,10 +44,16 @@ public class Player extends GameComponent<GameMap> {
 	public Player(final double row, final double column) {
 		this.setAppearance(SpriteResources.sprite("assets/bomberman/bomberman",
 				"bomberman-front1"));
-		this.setX(column * CELL_WIDTH);
-		this.setY(row * CELL_HEIGHT);
-		this.remaindingBombs = 2;
+		this.setX(this.initialX = column * CELL_WIDTH);
+		this.setY(this.initialY = row * CELL_HEIGHT);
+		this.remaindingBombs = 1;
 		this.setCollitionGroup(COLITION_GROUPS.player);
+	}
+
+	public Player initialize() {
+		this.setX(this.initialX);
+		this.setY(this.initialY);
+		return this;
 	}
 
 	@Override
@@ -49,7 +63,7 @@ public class Player extends GameComponent<GameMap> {
 		this.fire(new PlayerMoveEvent());
 	}
 
-	private void updateCamera() {
+	public void updateCamera() {
 		final int x = this.getGame().getDisplayWidth() / 2;
 		final int y = this.getGame().getDisplayHeight() / 2;
 		final double dx = this.getX() - x;
@@ -58,83 +72,75 @@ public class Player extends GameComponent<GameMap> {
 		this.getScene().setCamY(dy);
 	}
 
-	@Events.Keyboard(type = EventType.BeingHold, key = Key.D)
-	private void goRight(final DeltaState state) {
-		this.positionState.applyRightAnimation(this);
-		this.move(CELL_WIDTH * state.getDelta(), 0);
-	}
-
-	@Events.Keyboard(type = EventType.Released, key = Key.D)
-	private void goRightStop(final DeltaState state) {
-		this.positionState.applyRightStop(this);
-	}
-
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.Z)
 	private void goDie(final DeltaState state) {
 		this.setAppearance(SpriteResources.animation(
 				"assets/bomberman/bomberman", "bomberman-die"));
 	}
 
+	@Events.Keyboard(type = EventType.BeingHold, key = Key.D)
+	private void goRight(final DeltaState state) {
+		this.positionState.applyRightAnimation(this);
+	}
+
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.A)
 	private void goLeft(final DeltaState state) {
 		this.positionState.applyLeftAnimation(this);
-		this.move(-CELL_WIDTH * state.getDelta(), 0);
-	}
-
-	@Events.Keyboard(type = EventType.Released, key = Key.A)
-	private void goLeftStop(final DeltaState state) {
-		this.positionState.applyLeftStop(this);
 	}
 
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.S)
 	private void goDown(final DeltaState state) {
 		this.positionState.applyDownAnimation(this);
-		this.move(0, CELL_HEIGHT * state.getDelta());
-	}
-
-	@Events.Keyboard(type = EventType.Released, key = Key.S)
-	private void goDownStop(final DeltaState state) {
-		this.positionState.applyDownStop(this);
 	}
 
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.W)
 	private void goUp(final DeltaState state) {
 		this.positionState.applyUpAnimation(this);
-		this.move(0, -CELL_HEIGHT * state.getDelta());
 	}
 
-	@Events.Keyboard(type = EventType.Released, key = Key.W)
-	private void goUpStop(final DeltaState state) {
-		this.positionState.applyUpStop(this);
-	}
-
-	@Events.ColitionCheck.ForGroup(collisionStrategy = CollisionStrategy.PerfectPixel, exclude = { Score.class })
+	@Events.ColitionCheck.ForGroup(collisionStrategy = CollisionStrategy.PerfectPixel, exclude = {
+			Score.class, Item.class })
 	private void avoidBlockClollision(final GameComponent<?> target) {
 		this.alignVisualCloserTo(target);
 	}
 
-	@Events.ColitionCheck.ForGroup(collisionStrategy = CollisionStrategy.PerfectPixel)
+	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = ExplotionPart.class)
 	private void explotionClollisionCheck(final ExplotionPart explotion) {
 		this.die();
 	}
 
+	@Events.Update
+	private void update(final double delta) {
+		this.positionState.update(delta, this);
+	}
+
 	private void die() {
-		// TODO Auto-generated method stub
-		this.destroy();
-		this.fire(new PlayerLossLife());
+		this.fire(new PlayerLossLifeEvent());
 	}
 
 	@Events.Keyboard(key = Key.SPACE, type = EventType.Pressed)
 	private void putBomb(final DeltaState state) {
-		if (this.remaindingBombs > 0) {
+		if (this.canPutBomb()) {
 			this.remaindingBombs--;
+			this.setCanPutBomb(false);
 			this.getScene().putBomb(this.getX(), this.getY(),
 					this.explosionSize);
 		}
+	}
+
+	private boolean canPutBomb() {
+		return this.canPutBomb && (this.remaindingBombs > 0);
+	}
+
+	public void setCanPutBomb(final boolean canPutBomb) {
+		this.canPutBomb = canPutBomb;
 	}
 
 	public void addBombRemaind() {
 		this.remaindingBombs++;
 	}
 
+	public void increseExplosionSize() {
+		this.explosionSize++;
+	}
 }

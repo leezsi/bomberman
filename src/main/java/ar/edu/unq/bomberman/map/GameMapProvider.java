@@ -13,7 +13,7 @@ public class GameMapProvider {
 	private GameMapProvider() {
 	}
 
-	public static void level(final int level, final Bomberman bomberman,
+	public static GameMap level(final int level, final Bomberman bomberman,
 			final Score<GameMap> score) {
 		try {
 
@@ -24,20 +24,27 @@ public class GameMapProvider {
 			final GameMapXML map = (GameMapXML) objectStream.readObject();
 			objectStream.close();
 			systemResource.close();
-			new GameMapProvider().fill(bomberman, map, score);
+			return new GameMapProvider().fill(bomberman, map, score);
 		} catch (final Exception e) {
 			throw new GameException(e);
 		}
 
 	}
 
-	private void fill(final Bomberman bomberman, final GameMapXML xml,
+	private GameMap fill(final Bomberman bomberman, final GameMapXML xml,
 			final Score<GameMap> score) {
 		final GameMap map = new GameMap(xml.width, xml.height, score);
 		for (final Cell cell : xml.cells) {
 			cell.addContent(map);
 		}
-		bomberman.setCurrentScene(map);
+		return map;
+	}
+
+	public static GameMap level(final int level, final Bomberman bomberman,
+			final GameMap map) {
+		final GameMap newMap = level(level, bomberman, map.getScore());
+		newMap.setLives(map.getLives());
+		return newMap;
 	}
 
 }

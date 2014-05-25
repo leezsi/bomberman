@@ -9,10 +9,10 @@ import ar.edu.unq.americana.pooling.AbstractPool;
 @Bean
 public class ItemPool {
 
-	private static Map<String, AbstractPool<?>> pools = new HashMap<String, AbstractPool<?>>();
+	private static Map<Class<? extends Item>, AbstractPool<? extends Item>> pools = new HashMap<Class<? extends Item>, AbstractPool<? extends Item>>();
 
 	static {
-		pools.put("fulgor", new AbstractPool<Fulgor>() {
+		pools.put(Fulgor.class, new AbstractPool<Fulgor>() {
 
 			@Override
 			protected void initialize() {
@@ -24,7 +24,7 @@ public class ItemPool {
 				return Fulgor.class;
 			}
 		});
-		pools.put("bomb", new AbstractPool<Bomb>() {
+		pools.put(Bomb.class, new AbstractPool<Bomb>() {
 
 			@Override
 			protected void initialize() {
@@ -36,7 +36,7 @@ public class ItemPool {
 				return Bomb.class;
 			}
 		});
-		pools.put("door", new AbstractPool<Door>() {
+		pools.put(Door.class, new AbstractPool<Door>() {
 
 			@Override
 			protected void initialize() {
@@ -50,8 +50,13 @@ public class ItemPool {
 		});
 	}
 
-	public static Item get(final String item) {
-		return (Item) pools.get(item).get();
+	public static Item get(final Class<? extends Item> item) {
+		return pools.get(item).get();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void add(final Item item) {
+		((AbstractPool<Item>) pools.get(item.getClass())).add(item);
 	}
 
 }

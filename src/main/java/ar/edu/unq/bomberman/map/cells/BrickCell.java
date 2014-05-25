@@ -2,6 +2,7 @@ package ar.edu.unq.bomberman.map.cells;
 
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.block.Block;
+import ar.edu.unq.bomberman.level.block.BrickPool;
 
 public class BrickCell extends Cell {
 
@@ -13,7 +14,9 @@ public class BrickCell extends Cell {
 
 	@Override
 	public void addContent(final GameMap map) {
-		map.addBlock(new Block(this.getFixedRow(), this.getFixedColumn()));
+		final Block block = BrickPool.<Block> get("normal");
+		block.initialize(this.getFixedRow(), this.getFixedColumn());
+		map.addBlock(block);
 	}
 
 }

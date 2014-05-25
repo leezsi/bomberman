@@ -1,10 +1,11 @@
 package ar.edu.unq.bomberman;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 
 import javax.imageio.ImageIO;
@@ -39,7 +40,11 @@ public class MapGenerator {
 	}
 
 	public static void main(final String[] args) throws Exception {
-		final String level = args[0];
+		System.out.println("Ingrese el numero de mapa");
+		System.out.print("mapa nº:");
+		final BufferedReader br = new BufferedReader(new InputStreamReader(
+				System.in));
+		final String level = br.readLine();
 		new MapGenerator(level).generateAs(level);
 	}
 
@@ -102,7 +107,7 @@ public class MapGenerator {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				final int pixel = this.baseImage.getRGB(i, j);
-				if (new Color(pixel).equals(Color.white)) {
+				if (((pixel >> 24) & 0xff) != 0) {
 					map.addSteelBrick(j, i);
 				}
 			}

@@ -1,6 +1,7 @@
 package ar.edu.unq.bomberman.map.cells;
 
 import ar.edu.unq.bomberman.level.GameMap;
+import ar.edu.unq.bomberman.level.block.BrickPool;
 import ar.edu.unq.bomberman.level.block.UnbreakableBlock;
 
 public class SteelCell extends Cell {
@@ -12,7 +13,9 @@ public class SteelCell extends Cell {
 
 	@Override
 	public void addContent(final GameMap map) {
-		map.addBlock(new UnbreakableBlock(this.getFixedRow(), this
-				.getFixedColumn()));
+		final UnbreakableBlock block = BrickPool
+				.<UnbreakableBlock> get("unbreakable");
+		block.initialize(this.getFixedRow(), this.getFixedColumn());
+		map.addBlock(block);
 	}
 }
