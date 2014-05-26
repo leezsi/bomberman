@@ -4,19 +4,43 @@ import ar.edu.unq.americana.DeltaState;
 import ar.edu.unq.americana.GameComponent;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.components.Score;
+import ar.edu.unq.americana.configs.Bean;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
-import ar.edu.unq.bomberman.COLITION_GROUPS;
+import ar.edu.unq.americana.scenes.camera.CameraUpdateEvent;
+import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
+import ar.edu.unq.bomberman.level.enemies.Enemy;
 import ar.edu.unq.bomberman.level.items.Item;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
+@Bean
 public class Player extends GameComponent<GameMap> {
+
+	public void setBombHeart(final boolean bombHeart) {
+		this.bombHeart = bombHeart;
+	}
+
+	public int getRemaindingBombs() {
+		return this.remaindingBombs;
+	}
+
+	public void setRemaindingBombs(final int remaindingBombs) {
+		this.remaindingBombs = remaindingBombs;
+	}
+
+	public int getExplosionSize() {
+		return this.explosionSize;
+	}
+
+	public void setExplosionSize(final int explosionSize) {
+		this.explosionSize = explosionSize;
+	}
 
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
@@ -37,6 +61,8 @@ public class Player extends GameComponent<GameMap> {
 
 	private double initialY;
 
+	private boolean bombHeart;
+
 	public void setPositionState(final PlayerPositionState positionState) {
 		this.positionState = positionState;
 	}
@@ -47,29 +73,23 @@ public class Player extends GameComponent<GameMap> {
 		this.setX(this.initialX = column * CELL_WIDTH);
 		this.setY(this.initialY = row * CELL_HEIGHT);
 		this.remaindingBombs = 1;
-		this.setCollitionGroup(COLITION_GROUPS.player);
+		this.setCollitionGroup(COLLITION_GROUPS.player);
 	}
 
 	public Player initialize() {
 		this.setX(this.initialX);
 		this.setY(this.initialY);
+		this.explosionSize = 1;
+		this.remaindingBombs = 1;
+		this.bombHeart = false;
 		return this;
 	}
 
 	@Override
 	public void move(final double dx, final double dy) {
 		super.move(dx, dy);
-		this.updateCamera();
+		this.fire(new CameraUpdateEvent());
 		this.fire(new PlayerMoveEvent());
-	}
-
-	public void updateCamera() {
-		final int x = this.getGame().getDisplayWidth() / 2;
-		final int y = this.getGame().getDisplayHeight() / 2;
-		final double dx = this.getX() - x;
-		final double dy = this.getY() - y;
-		this.getScene().setCamX(dx);
-		this.getScene().setCamY(dy);
 	}
 
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.Z)
@@ -99,23 +119,26 @@ public class Player extends GameComponent<GameMap> {
 	}
 
 	@Events.ColitionCheck.ForGroup(collisionStrategy = CollisionStrategy.PerfectPixel, exclude = {
-			Score.class, Item.class })
+			Score.class, Item.class, Enemy.class })
 	private void avoidBlockClollision(final GameComponent<?> target) {
 		this.alignVisualCloserTo(target);
 	}
 
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = ExplotionPart.class)
 	private void explotionClollisionCheck(final ExplotionPart explotion) {
-		this.die();
+		this.fire(new PlayerLossLifeEvent());
+	}
+
+	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = Enemy.class)
+	private void enemyClollisionCheck(final Enemy enemy) {
+		if (enemy.isAlive()) {
+			this.fire(new PlayerLossLifeEvent());
+		}
 	}
 
 	@Events.Update
 	private void update(final double delta) {
 		this.positionState.update(delta, this);
-	}
-
-	private void die() {
-		this.fire(new PlayerLossLifeEvent());
 	}
 
 	@Events.Keyboard(key = Key.SPACE, type = EventType.Pressed)
@@ -142,5 +165,9 @@ public class Player extends GameComponent<GameMap> {
 
 	public void increseExplosionSize() {
 		this.explosionSize++;
+	}
+
+	public boolean isBombHeart() {
+		return this.bombHeart;
 	}
 }

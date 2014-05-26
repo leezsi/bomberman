@@ -36,6 +36,18 @@ public class ItemPool {
 				return Bomb.class;
 			}
 		});
+		pools.put(Heart.class, new AbstractPool<Heart>() {
+
+			@Override
+			protected void initialize() {
+				this.initialize(5);
+			}
+
+			@Override
+			protected Class<Heart> getType() {
+				return Heart.class;
+			}
+		});
 		pools.put(Door.class, new AbstractPool<Door>() {
 
 			@Override
@@ -50,8 +62,9 @@ public class ItemPool {
 		});
 	}
 
-	public static Item get(final Class<? extends Item> item) {
-		return pools.get(item).get();
+	@SuppressWarnings("unchecked")
+	public static <I extends Item> I get(final Class<? extends Item> item) {
+		return (I) pools.get(item).get();
 	}
 
 	@SuppressWarnings("unchecked")

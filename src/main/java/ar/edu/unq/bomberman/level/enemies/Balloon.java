@@ -7,12 +7,17 @@ import ar.edu.unq.americana.appearances.utils.SpriteResources;
 public class Balloon extends Enemy {
 	@Override
 	protected Animation aliveAnimation() {
-		return SpriteResources.animation("assets/enemies/enemies", "bolloon");
+		return SpriteResources.animation("assets/enemies/enemies", "balloon");
 	}
 
 	@Override
 	protected Shape onDieAppearance() {
 		return SpriteResources.animation("assets/enemies/enemies",
-				"bolloon-die");
+				"balloon-die");
+	}
+
+	@Override
+	protected EnemyStrategy movementStrategy() {
+		return EnemyStrategy.Balloon.initialize(CELL_WIDTH, CELL_HEIGHT);
 	}
 }

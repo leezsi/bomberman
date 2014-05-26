@@ -40,12 +40,15 @@ public class MapGenerator {
 	}
 
 	public static void main(final String[] args) throws Exception {
-		System.out.println("Ingrese el numero de mapa");
-		System.out.print("mapa nº:");
+		System.out.println("Ingrese la cantidad de mapas");
+		System.out.print("cuantos mapas:");
 		final BufferedReader br = new BufferedReader(new InputStreamReader(
 				System.in));
-		final String level = br.readLine();
-		new MapGenerator(level).generateAs(level);
+		final int count = Integer.valueOf(br.readLine());
+		for (int i = 1; i <= count; i++) {
+			System.out.println("generando mapa nº " + String.valueOf(i));
+			new MapGenerator(String.valueOf(i)).generateAs(String.valueOf(i));
+		}
 	}
 
 	private void generateAs(final String level) throws Exception {

@@ -5,7 +5,7 @@ import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
-import ar.edu.unq.bomberman.COLITION_GROUPS;
+import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.player.Player;
@@ -21,7 +21,7 @@ public abstract class Item extends GameComponent<GameMap> {
 		this.setAppearance(SpriteResources.sprite("assets/block/items/items",
 				this.image()));
 		this.setZ(ZINDEXS.item);
-		this.setCollitionGroup(COLITION_GROUPS.item);
+		this.setCollitionGroup(COLLITION_GROUPS.item);
 	}
 
 	public Item initialize(final double row, final double column) {

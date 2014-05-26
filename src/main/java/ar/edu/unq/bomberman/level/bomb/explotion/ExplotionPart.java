@@ -39,6 +39,7 @@ public abstract class ExplotionPart extends GameComponent<GameMap> {
 	public void update(final double delta) {
 		if ((this.remaindingTime -= delta) <= 0) {
 			this.destroy();
+			this.getScene().removeExplotionPart(this);
 		}
 	}
 

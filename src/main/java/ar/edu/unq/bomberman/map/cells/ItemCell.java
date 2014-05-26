@@ -5,8 +5,8 @@ import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.items.Bomb;
 import ar.edu.unq.bomberman.level.items.Door;
 import ar.edu.unq.bomberman.level.items.Fulgor;
+import ar.edu.unq.bomberman.level.items.Heart;
 import ar.edu.unq.bomberman.level.items.Item;
-import ar.edu.unq.bomberman.level.items.ItemPool;
 
 public class ItemCell extends Cell {
 
@@ -26,6 +26,8 @@ public class ItemCell extends Cell {
 			return Fulgor.class;
 		case 0xff00ff00:
 			return Bomb.class;
+		case 0xffdf006a:
+			return Heart.class;
 		default:
 			throw new GameException("unknow item type");
 		}
@@ -33,7 +35,6 @@ public class ItemCell extends Cell {
 
 	@Override
 	public void addContent(final GameMap map) {
-		map.addItem(ItemPool.get(this.type).initialize(this.getFixedRow(),
-				this.getFixedColumn()));
+		map.addItem(this.type, this.getFixedRow(), this.getFixedColumn());
 	}
 }

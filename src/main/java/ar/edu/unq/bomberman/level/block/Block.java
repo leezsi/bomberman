@@ -4,7 +4,7 @@ import ar.edu.unq.americana.GameComponent;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
-import ar.edu.unq.bomberman.COLITION_GROUPS;
+import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
 import ar.edu.unq.bomberman.level.GameMap;
 
@@ -20,12 +20,13 @@ public abstract class Block extends GameComponent<GameMap> {
 		this.setAppearance(SpriteResources.sprite("assets/block/block",
 				this.spriteResource()));
 		this.setZ(ZINDEXS.block);
-		this.setCollitionGroup(COLITION_GROUPS.block);
+		this.setCollitionGroup(COLLITION_GROUPS.block);
 	}
 
-	public void initialize(final double row, final double column) {
+	public Block initialize(final double row, final double column) {
 		this.setX(column * CELL_WIDTH);
 		this.setY(row * CELL_HEIGHT);
+		return this;
 	}
 
 	protected abstract String spriteResource();

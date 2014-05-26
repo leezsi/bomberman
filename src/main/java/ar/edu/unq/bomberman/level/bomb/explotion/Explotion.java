@@ -1,6 +1,6 @@
 package ar.edu.unq.bomberman.level.bomb.explotion;
 
-import ar.edu.unq.americana.GameScene;
+import ar.edu.unq.bomberman.level.GameMap;
 
 public class Explotion {
 
@@ -14,29 +14,30 @@ public class Explotion {
 		this.explosionSize = explosionSize;
 	}
 
-	public void addComponents(final GameScene scene) {
-		scene.addComponent(new ExplotionCenter().initialize(this.cx, this.cy));
+	public void addComponents(final GameMap scene) {
+		scene.addExplotionPart(new ExplotionCenter().initialize(this.cx,
+				this.cy));
 		this.fillExplotion(scene);
-		scene.addComponent(new ExplotionVertically().initialize(this.cx,
+		scene.addExplotionPart(new ExplotionVertically().initialize(this.cx,
 				this.cy, -this.explosionSize, "explotion-top"));
-		scene.addComponent(new ExplotionVertically().initialize(this.cx,
+		scene.addExplotionPart(new ExplotionVertically().initialize(this.cx,
 				this.cy, this.explosionSize, "explotion-down"));
-		scene.addComponent(new ExplotionHorizontally().initialize(this.cx,
+		scene.addExplotionPart(new ExplotionHorizontally().initialize(this.cx,
 				this.cy, -this.explosionSize, "explotion-left"));
-		scene.addComponent(new ExplotionHorizontally().initialize(this.cx,
+		scene.addExplotionPart(new ExplotionHorizontally().initialize(this.cx,
 				this.cy, this.explosionSize, "explotion-right"));
 	}
 
-	private void fillExplotion(final GameScene scene) {
+	private void fillExplotion(final GameMap scene) {
 		for (int i = 1; i < this.explosionSize; i++) {
-			scene.addComponent(new ExplotionHorizontally().initialize(this.cx,
-					this.cy, i, "explotion-horizontal"));
-			scene.addComponent(new ExplotionHorizontally().initialize(this.cx,
-					this.cy, -i, "explotion-horizontal"));
-			scene.addComponent(new ExplotionVertically().initialize(this.cx,
-					this.cy, i, "explotion-vertical"));
-			scene.addComponent(new ExplotionVertically().initialize(this.cx,
-					this.cy, -i, "explotion-vertical"));
+			scene.addExplotionPart(new ExplotionHorizontally().initialize(
+					this.cx, this.cy, i, "explotion-horizontal"));
+			scene.addExplotionPart(new ExplotionHorizontally().initialize(
+					this.cx, this.cy, -i, "explotion-horizontal"));
+			scene.addExplotionPart(new ExplotionVertically().initialize(
+					this.cx, this.cy, i, "explotion-vertical"));
+			scene.addExplotionPart(new ExplotionVertically().initialize(
+					this.cx, this.cy, -i, "explotion-vertical"));
 		}
 	}
 }

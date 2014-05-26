@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource>
-	<animation name="bolloon" meantime="0.5" width="50" height="50">
+	<animation name="balloon" meantime="0.5" width="40" height="40">
 		<ref to="ballon1" />
 		<ref to="ballon2" />
 		<ref to="ballon3" />
@@ -9,44 +9,83 @@
 		<ref to="ballon6" />
 	</animation>
 
-	<animation name="bolloon-die" meantime="0.5" width="50"
-		height="50">
+	<animation name="balloon-die" meantime="0.5" width="40"
+		height="40">
 		<ref to="ballon-die1" />
 		<ref to="ballon-die2" />
 		<ref to="ballon-die3" />
 		<ref to="ballon-die4" />
 	</animation>
+	
+	<animation name="snowflake" meantime="0.5" width="40" height="40">
+		<ref to="snowflake1" />
+		<ref to="snowflake2" />
+		<ref to="snowflake3" />
+		<ref to="snowflake4" />
+		<ref to="snowflake5" />
+		<ref to="snowflake6" />
+	</animation>
+	
+	<animation name="snowflake-die" meantime="0.5" width="40" height="40">
+		<ref to="snowflake-die" />
+		<ref to="snowflake-die" />
+		<ref to="snowflake-die" />
+		<ref to="snowflake-die" />
+	</animation>
+	
 
 	<sprites img="enemies.png">
 		<sprite name="ballon1">
-			<crop x="0" y="0" width="15" height="18" />
+			<crop x="0" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon2">
-			<crop x="14" y="0" width="18" height="18" />
+			<crop x="16" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon3">
-			<crop x="32" y="0" width="18" height="18" />
+			<crop x="32" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon4">
-			<crop x="50" y="0" width="15" height="18" />
+			<crop x="48" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon5">
-			<crop x="65" y="0" width="18" height="18" />
+			<crop x="64" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon6">
-			<crop x="83" y="0" width="17" height="18" />
+			<crop x="80" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon-die1">
-			<crop x="100" y="0" width="16" height="18" />
+			<crop x="96" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon-die2">
-			<crop x="116" y="0" width="14" height="18" />
+			<crop x="112" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon-die3">
-			<crop x="130" y="0" width="10" height="18" />
+			<crop x="128" y="0" width="16" height="16" />
 		</sprite>
 		<sprite name="ballon-die4">
-			<crop x="140" y="0" width="8" height="18" />
+			<crop x="144" y="0" width="16" height="16" />
+		</sprite>
+		
+		<sprite name="snowflake1">
+			<crop x="0" y="16" width="16" height="16" />
+		</sprite>
+		<sprite name="snowflake2">
+			<crop x="16" y="16" width="16" height="16" />
+		</sprite>
+		<sprite name="snowflake3">
+			<crop x="32" y="16" width="16" height="16" />
+		</sprite>
+		<sprite name="snowflake4">
+			<crop x="48" y="16" width="16" height="16" />
+		</sprite>
+		<sprite name="snowflake5">
+			<crop x="64" y="16" width="16" height="16" />
+		</sprite>
+		<sprite name="snowflake6">
+			<crop x="80" y="16" width="16" height="16" />
+		</sprite>
+		<sprite name="snowflake-die">
+			<crop x="96" y="16" width="16" height="16" />
 		</sprite>
 	</sprites>
 </resource>

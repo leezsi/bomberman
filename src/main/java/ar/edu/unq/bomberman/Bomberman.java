@@ -5,8 +5,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import ar.edu.unq.americana.Game;
+import ar.edu.unq.americana.appearances.utils.SpriteResources;
+import ar.edu.unq.americana.components.LifeCounter;
 import ar.edu.unq.americana.components.Score;
 import ar.edu.unq.americana.configs.Bean;
+import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.utils.ResourcesUtils;
 import ar.edu.unq.bomberman.events.LevelWinEvent;
@@ -16,9 +19,10 @@ import ar.edu.unq.bomberman.map.GameMapProvider;
 @Bean
 public class Bomberman extends Game {
 
-	private static final int WIDTH = 800;
-
-	private static final int HEIGHT = 600;
+	@Property("game.width")
+	private static int WIDTH;
+	@Property("game.height")
+	private static int HEIGHT;
 
 	private Dimension dimension;
 
@@ -30,7 +34,9 @@ public class Bomberman extends Game {
 
 	private GameMap map;
 
-	private static final Font font = ResourcesUtils.getFont(
+	private LifeCounter<?> lifeCounter;
+
+	public static final Font font = ResourcesUtils.getFont(
 			"assets/fonts/Bombardier.ttf", Font.TRUETYPE_FONT, Font.BOLD, 50);
 
 	@Override
@@ -40,7 +46,6 @@ public class Bomberman extends Game {
 
 	@Override
 	protected void initializeResources() {
-		this.score = new Score<GameMap>(10, font, Color.black);
 	}
 
 	@Override
@@ -50,15 +55,21 @@ public class Bomberman extends Game {
 
 	public void startGame() {
 		this.currentLevel = 1;
-		this.map = GameMapProvider.level(this.currentLevel, this, this.score);
+		this.score = new Score<GameMap>(10, font, Color.black);
+		this.lifeCounter = new LifeCounter<GameMap>(3, SpriteResources.sprite(
+				"assets/bomberman/bomberman", "bomberman-front1"));
+		this.map = GameMapProvider.level(this.currentLevel, this, this.score,
+				this.lifeCounter);
 		this.setCurrentScene(this.map);
 	}
 
 	@Events.Fired(LevelWinEvent.class)
 	public void nextLevel(final LevelWinEvent event) {
 		if (this.currentLevel++ <= this.levelCount) {
-			this.setCurrentScene(this.map = GameMapProvider.level(
-					this.currentLevel, this, this.map));
+			final GameMap newLevel = GameMapProvider.level(this.currentLevel,
+					this, this.map);
+			newLevel.setPlayer(this.map.getPlayer());
+			this.setCurrentScene(this.map = newLevel);
 		}
 	}
 
