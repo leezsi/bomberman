@@ -7,7 +7,7 @@ import ar.edu.unq.bomberman.level.GameMap;
 public abstract class Cell implements Serializable {
 	private static final long serialVersionUID = -3617055785945703151L;
 
-	private final double row, column;
+	private final int row, column;
 
 	public Cell() {
 		this(0, 0);
@@ -18,11 +18,11 @@ public abstract class Cell implements Serializable {
 		this.column = column;
 	}
 
-	public double getFixedRow() {
+	public int getFixedRow() {
 		return this.row + 1;
 	}
 
-	public double getFixedColumn() {
+	public int getFixedColumn() {
 		return this.column + 1;
 	}
 

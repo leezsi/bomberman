@@ -1,9 +1,12 @@
 package ar.edu.unq.bomberman.level;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ar.edu.unq.americana.DeltaState;
+import ar.edu.unq.americana.GameComponent;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.components.LifeCounter;
 import ar.edu.unq.americana.components.Score;
@@ -34,17 +37,31 @@ public class GameMap extends CameraGameScene {
 	private final int height;
 	private Player player;
 	private final List<ExplotionPart> explotions = new ArrayList<ExplotionPart>();
+	private final Set<GameComponent<?>> elemements[][];
+
 	private final boolean[][] blocksExistence;
 	private final boolean[][] steelBlocksExistence;
 
+	@SuppressWarnings("unchecked")
 	public GameMap(final double width, final double height,
 			final Score<?> score, final LifeCounter<?> lifeCounter) {
 		super(score, lifeCounter);
 		this.width = (int) width + 1;
 		this.height = (int) height + 1;
+		this.elemements = new HashSet[this.height][this.width];
 		this.blocksExistence = new boolean[this.height][this.width];
 		this.steelBlocksExistence = new boolean[this.height][this.width];
 		this.addUnbreackableBlocks();
+	}
+
+	public void addElement(final Positionable component) {
+		final GameComponent<?> casted = (GameComponent<?>) component;
+		this.addComponent(casted);
+		Set<GameComponent<?>> set;
+		if ((set = this.elemements[component.getRow()][component.getColumn()]) == null) {
+			set = this.elemements[component.getRow()][component.getColumn()] = new HashSet<GameComponent<?>>();
+		}
+		set.add(casted);
 	}
 
 	@Override
@@ -180,10 +197,10 @@ public class GameMap extends CameraGameScene {
 		return true;
 	}
 
-	public void addItem(final Class<? extends Item> type,
-			final double fixedRow, final double fixedColumn) {
+	public void addItem(final Class<? extends Item> type, final int fixedRow,
+			final int fixedColumn) {
 		final Item item = ItemPool.<Item> get(type).initialize(fixedRow,
 				fixedColumn);
-		this.addComponent(item);
+		this.addElement(item);
 	}
 }

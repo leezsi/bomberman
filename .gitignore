@@ -3,3 +3,5 @@
 /.settings
 /target
 /src\main\security/keystore.jks
+/src\main\resources\maps/level1.data
+/src\main\resources\maps/level2.data
