@@ -64,6 +64,11 @@ public class GameMap extends CameraGameScene {
 		set.add(casted);
 	}
 
+	public boolean isElementPresent(final int row, final int column) {
+		final Set<GameComponent<?>> cell = this.elemements[row][column];
+		return (cell != null) && !cell.isEmpty();
+	}
+
 	@Override
 	public void onSetAsCurrent() {
 		super.onSetAsCurrent();
@@ -167,34 +172,26 @@ public class GameMap extends CameraGameScene {
 		this.addComponent(enemy);
 	}
 
-	public void addSteelBlock(final double row, final double column) {
+	public void addSteelBlock(final int row, final int column) {
 		final UnbreakableBlock block = BrickPool
 				.<UnbreakableBlock> get(UnbreakableBlock.class);
 		this.addComponent(block.initialize(row, column));
-		this.steelBlocksExistence[(int) row][(int) column] = true;
+		this.steelBlocksExistence[row][column] = true;
 	}
 
-	public void addBlock(final double row, final double column) {
+	public void addBlock(final int row, final int column) {
 		final Brick block = BrickPool.<Brick> get(Brick.class);
 		this.addComponent(block.initialize(row, column));
-		this.blocksExistence[(int) row][(int) column] = true;
+		this.blocksExistence[row][column] = true;
 	}
 
 	public boolean isBlockPresent(final int row, final int column) {
-		if ((row > 0) && (row < this.blocksExistence.length) && (column > 0)
-				&& (column < this.blocksExistence[0].length)) {
-			return this.steelBlocksExistence[row][column]
-					|| this.blocksExistence[row][column];
-		}
-		return true;
+		return this.steelBlocksExistence[row][column]
+				|| this.blocksExistence[row][column];
 	}
 
 	public boolean isSteelBlockPresent(final int row, final int column) {
-		if ((row > 0) && (row < this.blocksExistence.length) && (column > 0)
-				&& (column < this.blocksExistence[0].length)) {
-			return this.steelBlocksExistence[row][column];
-		}
-		return true;
+		return this.steelBlocksExistence[row][column];
 	}
 
 	public void addItem(final Class<? extends Item> type, final int fixedRow,
