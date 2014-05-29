@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.unq.americana.DeltaState;
+import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.components.LifeCounter;
 import ar.edu.unq.americana.components.Score;
 import ar.edu.unq.americana.configs.Property;
@@ -84,6 +85,8 @@ public class GameMap extends CameraGameScene {
 	@Events.Fired(PlayerLossLifeEvent.class)
 	private void playerLossLife(final PlayerLossLifeEvent event) {
 		this.getLifeCounter().lossLife();
+		this.player.setAppearance(SpriteResources.animation(
+				"assets/bomberman/bomberman", "bomberman-die"));
 		this.resetCamera();
 		this.cleanExplotions();
 		this.cameraFocusOn(this.player.initialize());
