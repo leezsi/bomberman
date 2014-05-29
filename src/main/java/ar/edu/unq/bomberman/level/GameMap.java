@@ -125,7 +125,7 @@ public class GameMap extends CameraGameScene {
 		this.addComponent(item);
 	}
 
-	public void addPlayer(final double row, final double column) {
+	public void addPlayer(final int row, final int column) {
 		this.player = new Player(row, column);
 		this.addComponent(this.player);
 	}
@@ -165,7 +165,7 @@ public class GameMap extends CameraGameScene {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addEnemy(final double fixedRow, final double fixedColumn,
+	public void addEnemy(final int fixedRow, final int fixedColumn,
 			final Class<?> type) {
 		final Enemy enemy = EnemyPool.get((Class<? extends Enemy>) type);
 		enemy.initialize(fixedRow, fixedColumn);

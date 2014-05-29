@@ -9,10 +9,12 @@ import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.utils.TrigonometricsAndRandomUtils;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.level.GameMap;
+import ar.edu.unq.bomberman.level.Positionable;
 import ar.edu.unq.bomberman.level.bomb.Bomb;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 
-public abstract class Enemy extends GameComponent<GameMap> {
+public abstract class Enemy extends GameComponent<GameMap> implements
+		Positionable {
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -65,9 +67,9 @@ public abstract class Enemy extends GameComponent<GameMap> {
 		this.die();
 	}
 
-	public void initialize(final double row, final double column) {
-		this.setX((this.column = (int) column) * CELL_WIDTH);
-		this.setY((this.row = (int) row) * CELL_HEIGHT);
+	public void initialize(final int row, final int column) {
+		this.setX((this.column = column) * CELL_WIDTH);
+		this.setY((this.row = row) * CELL_HEIGHT);
 		this.alive = true;
 	}
 
@@ -77,19 +79,23 @@ public abstract class Enemy extends GameComponent<GameMap> {
 
 	}
 
+	@Override
 	public int getColumn() {
 		return this.column;
 	}
 
+	@Override
 	public int getRow() {
 		return this.row;
 	}
 
-	public void fixColumn(final double delta) {
+	@Override
+	public void fixColumn(final int delta) {
 		this.column += delta;
 	}
 
-	public void fixRow(final double delta) {
+	@Override
+	public void fixRow(final int delta) {
 		this.row += delta;
 	}
 

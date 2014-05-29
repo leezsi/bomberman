@@ -13,6 +13,7 @@ import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.camera.CameraUpdateEvent;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.level.GameMap;
+import ar.edu.unq.bomberman.level.Positionable;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.Enemy;
@@ -20,7 +21,7 @@ import ar.edu.unq.bomberman.level.items.Item;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 @Bean
-public class Player extends GameComponent<GameMap> {
+public class Player extends GameComponent<GameMap> implements Positionable {
 
 	public void setBombHeart(final boolean bombHeart) {
 		this.bombHeart = bombHeart;
@@ -63,15 +64,21 @@ public class Player extends GameComponent<GameMap> {
 
 	private boolean bombHeart;
 
+	private int row;
+
+	private int column;
+
 	public void setPositionState(final PlayerPositionState positionState) {
 		this.positionState = positionState;
 	}
 
-	public Player(final double row, final double column) {
+	public Player(final int row, final int column) {
 		this.setAppearance(SpriteResources.sprite("assets/bomberman/bomberman",
 				"bomberman-front1"));
 		this.setX(this.initialX = column * CELL_WIDTH);
+		this.column = column;
 		this.setY(this.initialY = row * CELL_HEIGHT);
+		this.row = row;
 		this.remaindingBombs = 1;
 		this.setCollitionGroup(COLLITION_GROUPS.player);
 	}
@@ -169,5 +176,25 @@ public class Player extends GameComponent<GameMap> {
 
 	public boolean isBombHeart() {
 		return this.bombHeart;
+	}
+
+	@Override
+	public int getColumn() {
+		return this.column;
+	}
+
+	@Override
+	public void fixColumn(final int delta) {
+		this.column += delta;
+	}
+
+	@Override
+	public int getRow() {
+		return this.row;
+	}
+
+	@Override
+	public void fixRow(final int delta) {
+		this.row += delta;
 	}
 }

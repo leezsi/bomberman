@@ -8,8 +8,8 @@ import ar.edu.unq.bomberman.player.Player;
 
 public enum EnemyStrategy {
 	Balloon {
-		private double deltaX;
-		private double deltaY;
+		private int deltaX;
+		private int deltaY;
 
 		@Override
 		public void takeStep(final double delta, final Enemy enemy) {
