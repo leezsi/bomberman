@@ -48,7 +48,7 @@ public class GameMap extends CameraGameScene {
 		super(score, lifeCounter);
 		this.width = (int) width + 1;
 		this.height = (int) height + 1;
-		this.elemements = new HashSet[this.height][this.width];
+		this.elemements = new HashSet[this.height + 1][this.width + 1];
 		this.blocksExistence = new boolean[this.height][this.width];
 		this.steelBlocksExistence = new boolean[this.height][this.width];
 		this.addUnbreackableBlocks();
@@ -88,7 +88,7 @@ public class GameMap extends CameraGameScene {
 			final BorderBlock block = BrickPool
 					.<BorderBlock> get(BorderBlock.class);
 			block.initialize(row, i);
-			this.addComponent(block);
+			this.addElement(block);
 		}
 
 	}
@@ -99,7 +99,7 @@ public class GameMap extends CameraGameScene {
 			final BorderBlock block = BrickPool
 					.<BorderBlock> get(BorderBlock.class);
 			block.initialize(i, column);
-			this.addComponent(block);
+			this.addElement(block);
 		}
 
 	}
@@ -169,19 +169,19 @@ public class GameMap extends CameraGameScene {
 			final Class<?> type) {
 		final Enemy enemy = EnemyPool.get((Class<? extends Enemy>) type);
 		enemy.initialize(fixedRow, fixedColumn);
-		this.addComponent(enemy);
+		this.addElement(enemy);
 	}
 
 	public void addSteelBlock(final int row, final int column) {
 		final UnbreakableBlock block = BrickPool
 				.<UnbreakableBlock> get(UnbreakableBlock.class);
-		this.addComponent(block.initialize(row, column));
+		this.addElement(block.initialize(row, column));
 		this.steelBlocksExistence[row][column] = true;
 	}
 
 	public void addBlock(final int row, final int column) {
 		final Brick block = BrickPool.<Brick> get(Brick.class);
-		this.addComponent(block.initialize(row, column));
+		this.addElement(block.initialize(row, column));
 		this.blocksExistence[row][column] = true;
 	}
 
