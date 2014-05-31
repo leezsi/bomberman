@@ -8,6 +8,7 @@ import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
+import ar.edu.unq.bomberman.ZINDEXS;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.explotion.Explotion;
 
@@ -21,6 +22,7 @@ public class Bomb extends GameComponent<GameMap> {
 		this.explosionSize = explosionSize;
 		this.setX(x);
 		this.setY(y);
+		this.setZ(ZINDEXS.bomb);
 		this.setCollitionGroup(COLLITION_GROUPS.player);
 		this.setAppearance(SpriteResources
 				.animation("assets/bomb/bomb", "bomb"));
