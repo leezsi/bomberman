@@ -25,6 +25,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(dx, 0);
 			} else {
+				player.fixColumn(1);
 				this.applyRightStop(player);
 			}
 		};
@@ -48,6 +49,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(-dx, 0);
 			} else {
+				player.fixColumn(-1);
 				this.applyLeftStop(player);
 			}
 		}
@@ -71,6 +73,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(0, -dy);
 			} else {
+				player.fixRow(-1);
 				this.applyUpStop(player);
 			}
 		}
@@ -94,6 +97,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(0, dy);
 			} else {
+				player.fixRow(1);
 				this.applyDownStop(player);
 			}
 		}

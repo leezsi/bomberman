@@ -14,8 +14,13 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
+import ar.edu.unq.americana.ia.pathfindier.Node;
+import ar.edu.unq.americana.ia.pathfindier.TileMap;
 import ar.edu.unq.americana.scenes.camera.Camera;
 import ar.edu.unq.americana.scenes.camera.ICamera;
+import ar.edu.unq.americana.scenes.components.tilemap.BaseTileMap;
+import ar.edu.unq.americana.scenes.components.tilemap.ITileMapScene;
+import ar.edu.unq.americana.scenes.components.tilemap.Positionable;
 import ar.edu.unq.americana.scenes.normal.DefaultScene;
 import ar.edu.unq.bomberman.level.block.BorderBlock;
 import ar.edu.unq.bomberman.level.block.Brick;
@@ -31,7 +36,7 @@ import ar.edu.unq.bomberman.pause.BombermanPauseScene;
 import ar.edu.unq.bomberman.player.Player;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
-public class GameMap extends DefaultScene {
+public class GameMap extends DefaultScene implements ITileMapScene {
 
 	@Property("cam.delta")
 	private static double CAM_DELTA;
@@ -40,6 +45,7 @@ public class GameMap extends DefaultScene {
 	private Player player;
 	private final List<ExplotionPart> explotions = new ArrayList<ExplotionPart>();
 	private final Set<GameComponent<?>> elemements[][];
+	private final boolean accessibles[][];
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -49,6 +55,7 @@ public class GameMap extends DefaultScene {
 	private final boolean[][] blocksExistence;
 	private final boolean[][] steelBlocksExistence;
 	private final ICamera camera = new Camera();
+	private final BaseTileMap tileMap;
 
 	@SuppressWarnings("unchecked")
 	public GameMap(final double width, final double height,
@@ -57,9 +64,23 @@ public class GameMap extends DefaultScene {
 		this.width = (int) width + 1;
 		this.height = (int) height + 1;
 		this.elemements = new HashSet[this.height + 1][this.width + 1];
+		this.accessibles = this.generateAccessiblesGrid(this.height + 1,
+				this.width + 1);
 		this.blocksExistence = new boolean[this.height][this.width];
 		this.steelBlocksExistence = new boolean[this.height][this.width];
 		this.addUnbreackableBlocks();
+		this.tileMap = new BaseTileMap(this);
+	}
+
+	private boolean[][] generateAccessiblesGrid(final int rows,
+			final int columns) {
+		final boolean[][] tmp = new boolean[rows][columns];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				tmp[i][j] = true;
+			}
+		}
+		return tmp;
 	}
 
 	public void addElement(final Positionable component) {
@@ -91,6 +112,7 @@ public class GameMap extends DefaultScene {
 					.<BorderBlock> get(BorderBlock.class);
 			block.initialize(row, i);
 			this.addElement(block);
+			this.notAccessible(row, i);
 		}
 
 	}
@@ -102,6 +124,7 @@ public class GameMap extends DefaultScene {
 					.<BorderBlock> get(BorderBlock.class);
 			block.initialize(i, column);
 			this.addElement(block);
+			this.notAccessible(i, column);
 		}
 
 	}
@@ -138,6 +161,7 @@ public class GameMap extends DefaultScene {
 	public void putBomb(final double x, final double y, final int explosionSize) {
 		final Bomb bomb = new Bomb(x, y, explosionSize);
 		this.addComponent(bomb);
+		this.notAccessible((int) y, (int) x);
 	}
 
 	public void removeBomb(final Bomb bomb) {
@@ -182,7 +206,12 @@ public class GameMap extends DefaultScene {
 	public void addBlock(final int row, final int column) {
 		final Brick block = BrickPool.<Brick> get(Brick.class);
 		this.addElement(block.initialize(row, column));
+		this.notAccessible(row, column);
 		this.blocksExistence[row][column] = true;
+	}
+
+	private void notAccessible(final int row, final int column) {
+		this.accessibles[row][column] = false;
 	}
 
 	public boolean isBlockPresent(final int row, final int column) {
@@ -215,4 +244,49 @@ public class GameMap extends DefaultScene {
 	public double getHeight() {
 		return this.height * CELL_HEIGHT;
 	}
+
+	@Override
+	public int columnsCount() {
+		return this.width;
+	}
+
+	@Override
+	public int rowsCount() {
+		return this.height;
+	}
+
+	@Override
+	public boolean isAccessible(final int row, final int column) {
+		return this.isElementPresent(row, column);
+	}
+
+	@Override
+	public List<Node> adjacents(final Node node) {
+		final List<Node> adjacents = new ArrayList<Node>();
+		final int r = node.row();
+		final int c = node.column();
+		if (this.accessibles[r - 1][c]) {
+			adjacents
+					.add(new Node(r - 1, c, this.tileMap.getHeristic(r - 1, c)));
+		}
+		if (this.accessibles[r + 1][c]) {
+			adjacents
+					.add(new Node(r + 1, c, this.tileMap.getHeristic(r + 1, c)));
+		}
+		if (this.accessibles[r][c - 1]) {
+			adjacents
+					.add(new Node(r, c - 1, this.tileMap.getHeristic(r, c - 1)));
+		}
+		if (this.accessibles[r][c + 1]) {
+			adjacents
+					.add(new Node(r, c + 1, this.tileMap.getHeristic(r, c + 1)));
+		}
+		return adjacents;
+	}
+
+	@Override
+	public TileMap getTileMap() {
+		return this.tileMap;
+	}
+
 }

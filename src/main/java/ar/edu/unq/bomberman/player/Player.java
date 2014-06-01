@@ -11,9 +11,9 @@ import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.camera.CameraUpdateEvent;
+import ar.edu.unq.americana.scenes.components.tilemap.Positionable;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.level.GameMap;
-import ar.edu.unq.bomberman.level.Positionable;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.Enemy;
@@ -22,6 +22,11 @@ import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 @Bean
 public class Player extends GameComponent<GameMap> implements Positionable {
+
+	@Override
+	public String toString() {
+		return "Player [row=" + this.row + ", column=" + this.column + "]";
+	}
 
 	@Property("cell.width")
 	protected static double CELL_WIDTH;

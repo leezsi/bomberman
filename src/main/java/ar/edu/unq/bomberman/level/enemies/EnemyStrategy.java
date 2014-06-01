@@ -2,6 +2,8 @@ package ar.edu.unq.bomberman.level.enemies;
 
 import ar.edu.unq.americana.configs.Configs;
 import ar.edu.unq.americana.configs.Property;
+import ar.edu.unq.americana.ia.pathfindier.Path;
+import ar.edu.unq.americana.ia.pathfindier.astar.AStarPathFinding;
 import ar.edu.unq.americana.utils.TrigonometricsAndRandomUtils;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.player.Player;
@@ -55,6 +57,43 @@ public enum EnemyStrategy {
 		}
 
 	},
+	Pathfinding {
+
+		private Path path;
+		private AStarPathFinding pathFinder;
+		{
+			this.pathFinder = new AStarPathFinding();
+		}
+
+		@Override
+		public void takeStep(final double delta, final Enemy enemy) {
+			final GameMap scene = enemy.getScene();
+			final Player player = scene.getPlayer();
+			if (this.remaining <= 0) {
+				if (this.path != null) {
+					enemy.fixColumn(this.path.deltaColumn(enemy));
+					enemy.fixRow(this.path.deltaRow(enemy));
+					this.path = this.pathFinder.find(scene.getTileMap(), enemy,
+							player);
+					if (this.path != null) {
+						final int deltaColumn = this.path.deltaColumn(enemy);
+						this.remaining = deltaColumn == 0 ? this.cellHeight
+								: this.cellWidth;
+					}
+				} else {
+					this.path = this.pathFinder.find(scene.getTileMap(), enemy,
+							player);
+				}
+			} else {
+				final double ds = delta * SPEED;
+				this.remaining -= ds;
+				if (this.path != null) {
+					this.path.takeStep(ds, enemy);
+				}
+			}
+		}
+	},
+
 	Snowflake {
 		private double deltaX;
 		private double deltaY;
@@ -106,11 +145,15 @@ public enum EnemyStrategy {
 
 	public abstract void takeStep(final double delta, Enemy enemy);
 
+	private EnemyStrategy() {
+		Configs.injectAndReadBeans(this);
+		Configs.injectConfigs(this);
+	}
+
 	public EnemyStrategy initialize(final double width, final double height) {
 		this.cellWidth = width;
 		this.cellHeight = height;
 		this.remaining = 0;
-		Configs.injectConfigs(this.getDeclaringClass());
 		return this;
 	}
 }
