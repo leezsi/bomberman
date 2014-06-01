@@ -14,7 +14,9 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
-import ar.edu.unq.americana.scenes.camera.CameraGameScene;
+import ar.edu.unq.americana.scenes.camera.Camera;
+import ar.edu.unq.americana.scenes.camera.ICamera;
+import ar.edu.unq.americana.scenes.normal.DefaultScene;
 import ar.edu.unq.bomberman.level.block.BorderBlock;
 import ar.edu.unq.bomberman.level.block.Brick;
 import ar.edu.unq.bomberman.level.block.BrickPool;
@@ -29,7 +31,7 @@ import ar.edu.unq.bomberman.pause.BombermanPauseScene;
 import ar.edu.unq.bomberman.player.Player;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
-public class GameMap extends CameraGameScene {
+public class GameMap extends DefaultScene {
 
 	@Property("cam.delta")
 	private static double CAM_DELTA;
@@ -38,9 +40,15 @@ public class GameMap extends CameraGameScene {
 	private Player player;
 	private final List<ExplotionPart> explotions = new ArrayList<ExplotionPart>();
 	private final Set<GameComponent<?>> elemements[][];
+	@Property("cell.width")
+	protected static double CELL_WIDTH;
+
+	@Property("cell.height")
+	protected static double CELL_HEIGHT;
 
 	private final boolean[][] blocksExistence;
 	private final boolean[][] steelBlocksExistence;
+	private final ICamera camera = new Camera();
 
 	@SuppressWarnings("unchecked")
 	public GameMap(final double width, final double height,
@@ -67,12 +75,6 @@ public class GameMap extends CameraGameScene {
 	public boolean isElementPresent(final int row, final int column) {
 		final Set<GameComponent<?>> cell = this.elemements[row][column];
 		return (cell != null) && !cell.isEmpty();
-	}
-
-	@Override
-	public void onSetAsCurrent() {
-		super.onSetAsCurrent();
-		this.initializeCamera(this.player);
 	}
 
 	private void addUnbreackableBlocks() {
@@ -109,9 +111,7 @@ public class GameMap extends CameraGameScene {
 		this.getLifeCounter().lossLife();
 		this.player.setAppearance(SpriteResources.animation(
 				"assets/bomberman/bomberman", "bomberman-die"));
-		this.resetCamera();
 		this.cleanExplotions();
-		this.cameraFocusOn(this.player.initialize());
 	}
 
 	private void cleanExplotions() {
@@ -199,5 +199,20 @@ public class GameMap extends CameraGameScene {
 		final Item item = ItemPool.<Item> get(type).initialize(fixedRow,
 				fixedColumn);
 		this.addElement(item);
+	}
+
+	@Override
+	public ICamera getCamera() {
+		return this.camera;
+	}
+
+	@Override
+	public double getWidth() {
+		return this.width * CELL_WIDTH;
+	}
+
+	@Override
+	public double getHeight() {
+		return this.height * CELL_HEIGHT;
 	}
 }

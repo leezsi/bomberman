@@ -8,7 +8,6 @@ import ar.edu.unq.americana.Game;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.components.LifeCounter;
 import ar.edu.unq.americana.components.Score;
-import ar.edu.unq.americana.configs.Bean;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.utils.ResourcesUtils;
@@ -16,7 +15,6 @@ import ar.edu.unq.bomberman.events.LevelWinEvent;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.map.GameMapProvider;
 
-@Bean
 public class Bomberman extends Game {
 
 	@Property("game.width")

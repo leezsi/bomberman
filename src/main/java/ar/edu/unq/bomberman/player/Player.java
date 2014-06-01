@@ -23,26 +23,6 @@ import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 @Bean
 public class Player extends GameComponent<GameMap> implements Positionable {
 
-	public void setBombHeart(final boolean bombHeart) {
-		this.bombHeart = bombHeart;
-	}
-
-	public int getRemaindingBombs() {
-		return this.remaindingBombs;
-	}
-
-	public void setRemaindingBombs(final int remaindingBombs) {
-		this.remaindingBombs = remaindingBombs;
-	}
-
-	public int getExplosionSize() {
-		return this.explosionSize;
-	}
-
-	public void setExplosionSize(final int explosionSize) {
-		this.explosionSize = explosionSize;
-	}
-
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -95,7 +75,7 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 	@Override
 	public void move(final double dx, final double dy) {
 		super.move(dx, dy);
-		this.fire(new CameraUpdateEvent());
+		this.fire(new CameraUpdateEvent(dx, dy));
 		this.fire(new PlayerMoveEvent());
 	}
 
@@ -197,4 +177,25 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 	public void fixRow(final int delta) {
 		this.row += delta;
 	}
+
+	public void setBombHeart(final boolean bombHeart) {
+		this.bombHeart = bombHeart;
+	}
+
+	public int getRemaindingBombs() {
+		return this.remaindingBombs;
+	}
+
+	public void setRemaindingBombs(final int remaindingBombs) {
+		this.remaindingBombs = remaindingBombs;
+	}
+
+	public int getExplosionSize() {
+		return this.explosionSize;
+	}
+
+	public void setExplosionSize(final int explosionSize) {
+		this.explosionSize = explosionSize;
+	}
+
 }
