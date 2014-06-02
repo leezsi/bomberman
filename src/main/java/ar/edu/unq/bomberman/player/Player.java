@@ -138,8 +138,7 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 		if (this.canPutBomb()) {
 			this.remaindingBombs--;
 			this.setCanPutBomb(false);
-			this.getScene().putBomb(this.getX(), this.getY(),
-					this.explosionSize);
+			this.getScene().putBomb(this.row, this.column, this.explosionSize);
 		}
 	}
 

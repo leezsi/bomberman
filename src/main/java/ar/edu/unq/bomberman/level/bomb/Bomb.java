@@ -15,13 +15,20 @@ import ar.edu.unq.bomberman.level.bomb.explotion.Explotion;
 public class Bomb extends GameComponent<GameMap> {
 	private final int explosionSize;
 	private double delay;
+	private int column;
+	private int row;
+	@Property("cell.width")
+	protected static double CELL_WIDTH;
+
+	@Property("cell.height")
+	protected static double CELL_HEIGHT;
 	@Property("bomb.delay")
 	private static double BOMB_DELAY;
 
-	public Bomb(final double x, final double y, final int explosionSize) {
+	public Bomb(final int row, final int column, final int explosionSize) {
 		this.explosionSize = explosionSize;
-		this.setX(x);
-		this.setY(y);
+		this.setX((this.column = column) * CELL_WIDTH);
+		this.setY((this.row = row) * CELL_HEIGHT);
 		this.setZ(ZINDEXS.bomb);
 		this.setCollitionGroup(COLLITION_GROUPS.player);
 		this.setAppearance(SpriteResources
@@ -51,13 +58,8 @@ public class Bomb extends GameComponent<GameMap> {
 
 	private void expode() {
 		this.getScene().removeBomb(this);
-		new Explotion(this.explosionSize, this.getX(), this.getY())
+		new Explotion(this.explosionSize, this.row, this.column)
 				.addComponents(this.getScene());
 	}
 
-	@Override
-	public void onSceneActivated() {
-		this.setX(this.getGame().getDisplayWidth() / 2);
-		this.setY(this.getGame().getDisplayHeight() / 2);
-	}
 }

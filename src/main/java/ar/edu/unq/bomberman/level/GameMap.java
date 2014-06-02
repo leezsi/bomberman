@@ -158,10 +158,10 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		this.addComponent(part);
 	}
 
-	public void putBomb(final double x, final double y, final int explosionSize) {
-		final Bomb bomb = new Bomb(x, y, explosionSize);
+	public void putBomb(final int row, final int column, final int explosionSize) {
+		final Bomb bomb = new Bomb(row, column, explosionSize);
 		this.addComponent(bomb);
-		this.notAccessible((int) y, (int) x);
+		this.notAccessible(row, column);
 	}
 
 	public void removeBomb(final Bomb bomb) {

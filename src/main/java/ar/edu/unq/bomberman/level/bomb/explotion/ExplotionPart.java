@@ -21,16 +21,16 @@ public abstract class ExplotionPart extends GameComponent<GameMap> {
 
 	protected abstract String spriteName();
 
-	public ExplotionPart initialize(final double x, final double y) {
-		return this.initialize(x, y, 0);
+	public ExplotionPart initialize(final double row, final double column) {
+		return this.initialize(row, column, 0);
 	}
 
-	protected ExplotionPart initialize(final double x, final double y,
+	protected ExplotionPart initialize(final double row, final double column,
 			final double delta) {
 		this.setAppearance(SpriteResources.sprite("assets/bomb/bomb",
 				this.spriteName()).copy());
-		this.setX(x);
-		this.setY(y);
+		this.setX(column * CELL_WIDTH);
+		this.setY(row * CELL_HEIGHT);
 		this.remaindingTime = ANIMATION_DURATION * (Math.abs(delta) + 1);
 		return this;
 	}
