@@ -264,8 +264,8 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	@Override
 	public boolean isAccessible(final int row, final int column) {
-		if ((row < 0) || (column < 0) || (row > this.height)
-				|| (column > this.width)) {
+		if ((row < 1) || (column < 1) || (row >= this.height)
+				|| (column >= this.width)) {
 			return false;
 		}
 		return !this.isBlockPresent(row, column);

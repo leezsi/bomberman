@@ -62,14 +62,18 @@ public enum EnemyStrategy {
 		@Override
 		public void takeStep(final double delta, final Enemy enemy) {
 			final GameMap scene = enemy.getScene();
-			final Path _path = new AStarPathFinding().find(scene.getTileMap(),
-					enemy, scene.getPlayer());
-			if (_path != null) {
-				final EnemyStrategy strategy = PathfindingMoving.initialize(
-						this.cellWidth, this.cellHeight, _path);
-				strategy.remaining = _path.deltaColumn(enemy) == 0 ? this.cellHeight
-						: this.cellWidth;
-				enemy.changeStratety(strategy);
+			if (TrigonometricsAndRandomUtils
+					.manhattan(enemy, scene.getPlayer()) < 5) {
+
+				final Path _path = new AStarPathFinding().find(
+						scene.getTileMap(), enemy, scene.getPlayer());
+				if (_path != null) {
+					final EnemyStrategy strategy = PathfindingMoving
+							.initialize(this.cellWidth, this.cellHeight, _path);
+					strategy.remaining = _path.deltaColumn(enemy) == 0 ? this.cellHeight
+							: this.cellWidth;
+					enemy.changeStratety(strategy);
+				}
 			}
 		}
 

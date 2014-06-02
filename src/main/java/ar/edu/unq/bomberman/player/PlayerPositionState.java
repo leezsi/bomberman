@@ -128,20 +128,30 @@ public enum PlayerPositionState {
 	}
 
 	public void applyRightAnimation(final Player player) {
-		if (this.remaind <= 0) {
-			player.setAppearance(this.getAnimation("bomberman-right"));
-			player.setPositionState(GOING_RIGHT.initialize(this.width,
-					this.height).remaind(this.width));
-			player.setCanPutBomb(true);
+		if ((this.remaind <= 0)) {
+			if (player.getScene().isAccessible(player.getRow(),
+					player.getColumn() + 1)) {
+				player.setAppearance(this.getAnimation("bomberman-right"));
+				player.setPositionState(GOING_RIGHT.initialize(this.width,
+						this.height).remaind(this.width));
+				player.setCanPutBomb(true);
+			} else {
+				player.setAppearance(this.getSprite("bomberman-right1"));
+			}
 		}
 	};
 
 	public void applyLeftAnimation(final Player player) {
 		if (this.remaind <= 0) {
-			player.setAppearance(this.getAnimation("bomberman-left"));
-			player.setPositionState(GOING_LEFT.initialize(this.width,
-					this.height).remaind(this.width));
-			player.setCanPutBomb(true);
+			if (player.getScene().isAccessible(player.getRow(),
+					player.getColumn() - 1)) {
+				player.setAppearance(this.getAnimation("bomberman-left"));
+				player.setPositionState(GOING_LEFT.initialize(this.width,
+						this.height).remaind(this.width));
+				player.setCanPutBomb(true);
+			} else {
+				player.setAppearance(this.getSprite("bomberman-left1"));
+			}
 		}
 	}
 
@@ -152,10 +162,15 @@ public enum PlayerPositionState {
 
 	public void applyDownAnimation(final Player player) {
 		if (this.remaind <= 0) {
-			player.setAppearance(this.getAnimation("bomberman-front"));
-			player.setPositionState(GOING_DOWN.initialize(this.width,
-					this.height).remaind(this.height));
-			player.setCanPutBomb(true);
+			if (player.getScene().isAccessible(player.getRow() + 1,
+					player.getColumn())) {
+				player.setAppearance(this.getAnimation("bomberman-front"));
+				player.setPositionState(GOING_DOWN.initialize(this.width,
+						this.height).remaind(this.height));
+				player.setCanPutBomb(true);
+			} else {
+				player.setAppearance(this.getSprite("bomberman-front1"));
+			}
 		}
 	}
 
@@ -166,10 +181,15 @@ public enum PlayerPositionState {
 
 	public void applyUpAnimation(final Player player) {
 		if (this.remaind <= 0) {
-			player.setAppearance(this.getAnimation("bomberman-back"));
-			player.setPositionState(GOING_UP
-					.initialize(this.width, this.height).remaind(this.height));
-			player.setCanPutBomb(true);
+			if (player.getScene().isAccessible(player.getRow() - 1,
+					player.getColumn())) {
+				player.setAppearance(this.getAnimation("bomberman-back"));
+				player.setPositionState(GOING_UP.initialize(this.width,
+						this.height).remaind(this.height));
+				player.setCanPutBomb(true);
+			} else {
+				player.setAppearance(this.getSprite("bomberman-back1"));
+			}
 		}
 	}
 

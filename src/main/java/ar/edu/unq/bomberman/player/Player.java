@@ -23,11 +23,6 @@ import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 @Bean
 public class Player extends GameComponent<GameMap> implements Positionable {
 
-	@Override
-	public String toString() {
-		return "Player [row=" + this.row + ", column=" + this.column + "]";
-	}
-
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -75,13 +70,6 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 		this.remaindingBombs = 1;
 		this.bombHeart = false;
 		return this;
-	}
-
-	@Override
-	public void move(final double dx, final double dy) {
-		super.move(dx, dy);
-		this.fire(new CameraUpdateEvent(dx, dy));
-		this.fire(new PlayerMoveEvent());
 	}
 
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.Z)
@@ -202,4 +190,15 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 		this.explosionSize = explosionSize;
 	}
 
+	@Override
+	public String toString() {
+		return "Player [row=" + this.row + ", column=" + this.column + "]";
+	}
+
+	@Override
+	public void move(final double dx, final double dy) {
+		super.move(dx, dy);
+		this.fire(new CameraUpdateEvent(dx, dy));
+		this.fire(new PlayerMoveEvent());
+	}
 }
