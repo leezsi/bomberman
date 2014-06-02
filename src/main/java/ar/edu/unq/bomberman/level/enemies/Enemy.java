@@ -103,4 +103,7 @@ public abstract class Enemy extends GameComponent<GameMap> implements
 		return this.alive;
 	}
 
+	public void changeStratety(final EnemyStrategy strategy) {
+		this.strategy = strategy;
+	}
 }

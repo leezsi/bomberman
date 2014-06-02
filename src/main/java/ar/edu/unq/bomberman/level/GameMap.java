@@ -45,7 +45,6 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private Player player;
 	private final List<ExplotionPart> explotions = new ArrayList<ExplotionPart>();
 	private final Set<GameComponent<?>> elemements[][];
-	private final boolean accessibles[][];
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -64,23 +63,10 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		this.width = (int) width + 1;
 		this.height = (int) height + 1;
 		this.elemements = new HashSet[this.height + 1][this.width + 1];
-		this.accessibles = this.generateAccessiblesGrid(this.height + 1,
-				this.width + 1);
 		this.blocksExistence = new boolean[this.height][this.width];
 		this.steelBlocksExistence = new boolean[this.height][this.width];
 		this.addUnbreackableBlocks();
 		this.tileMap = new BaseTileMap(this);
-	}
-
-	private boolean[][] generateAccessiblesGrid(final int rows,
-			final int columns) {
-		final boolean[][] tmp = new boolean[rows][columns];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				tmp[i][j] = true;
-			}
-		}
-		return tmp;
 	}
 
 	public void addElement(final Positionable component) {
@@ -112,7 +98,6 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 					.<BorderBlock> get(BorderBlock.class);
 			block.initialize(row, i);
 			this.addElement(block);
-			this.notAccessible(row, i);
 		}
 
 	}
@@ -124,7 +109,6 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 					.<BorderBlock> get(BorderBlock.class);
 			block.initialize(i, column);
 			this.addElement(block);
-			this.notAccessible(i, column);
 		}
 
 	}
@@ -161,7 +145,6 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public void putBomb(final int row, final int column, final int explosionSize) {
 		final Bomb bomb = new Bomb(row, column, explosionSize);
 		this.addComponent(bomb);
-		this.notAccessible(row, column);
 	}
 
 	public void removeBomb(final Bomb bomb) {
@@ -206,12 +189,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public void addBlock(final int row, final int column) {
 		final Brick block = BrickPool.<Brick> get(Brick.class);
 		this.addElement(block.initialize(row, column));
-		this.notAccessible(row, column);
 		this.blocksExistence[row][column] = true;
-	}
-
-	private void notAccessible(final int row, final int column) {
-		this.accessibles[row][column] = false;
 	}
 
 	public boolean isBlockPresent(final int row, final int column) {
@@ -256,28 +234,23 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	}
 
 	@Override
-	public boolean isAccessible(final int row, final int column) {
-		return this.isElementPresent(row, column);
-	}
-
-	@Override
 	public List<Node> adjacents(final Node node) {
 		final List<Node> adjacents = new ArrayList<Node>();
 		final int r = node.row();
 		final int c = node.column();
-		if (this.accessibles[r - 1][c]) {
+		if (this.isAccessible(r - 1, c)) {
 			adjacents
 					.add(new Node(r - 1, c, this.tileMap.getHeristic(r - 1, c)));
 		}
-		if (this.accessibles[r + 1][c]) {
+		if (this.isAccessible(r + 1, c)) {
 			adjacents
 					.add(new Node(r + 1, c, this.tileMap.getHeristic(r + 1, c)));
 		}
-		if (this.accessibles[r][c - 1]) {
+		if (this.isAccessible(r, c - 1)) {
 			adjacents
 					.add(new Node(r, c - 1, this.tileMap.getHeristic(r, c - 1)));
 		}
-		if (this.accessibles[r][c + 1]) {
+		if (this.isAccessible(r, c + 1)) {
 			adjacents
 					.add(new Node(r, c + 1, this.tileMap.getHeristic(r, c + 1)));
 		}
@@ -287,6 +260,15 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	@Override
 	public TileMap getTileMap() {
 		return this.tileMap;
+	}
+
+	@Override
+	public boolean isAccessible(final int row, final int column) {
+		if ((row < 0) || (column < 0) || (row > this.height)
+				|| (column > this.width)) {
+			return false;
+		}
+		return !this.isBlockPresent(row, column);
 	}
 
 }

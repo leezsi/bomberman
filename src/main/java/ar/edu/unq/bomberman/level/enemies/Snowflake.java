@@ -8,7 +8,8 @@ public class Snowflake extends Enemy {
 
 	@Override
 	protected EnemyStrategy movementStrategy() {
-		return EnemyStrategy.Snowflake.initialize(CELL_WIDTH, CELL_HEIGHT);
+		return EnemyStrategy.PathfindingLoockFor.initialize(CELL_WIDTH,
+				CELL_HEIGHT);
 	}
 
 	@Override

@@ -57,41 +57,39 @@ public enum EnemyStrategy {
 		}
 
 	},
-	Pathfinding {
-
-		private Path path;
-		private AStarPathFinding pathFinder;
-		{
-			this.pathFinder = new AStarPathFinding();
-		}
+	PathfindingLoockFor {
 
 		@Override
 		public void takeStep(final double delta, final Enemy enemy) {
 			final GameMap scene = enemy.getScene();
-			final Player player = scene.getPlayer();
-			if (this.remaining <= 0) {
-				if (this.path != null) {
-					enemy.fixColumn(this.path.deltaColumn(enemy));
-					enemy.fixRow(this.path.deltaRow(enemy));
-					this.path = this.pathFinder.find(scene.getTileMap(), enemy,
-							player);
-					if (this.path != null) {
-						final int deltaColumn = this.path.deltaColumn(enemy);
-						this.remaining = deltaColumn == 0 ? this.cellHeight
-								: this.cellWidth;
-					}
-				} else {
-					this.path = this.pathFinder.find(scene.getTileMap(), enemy,
-							player);
-				}
-			} else {
-				final double ds = delta * SPEED;
-				this.remaining -= ds;
-				if (this.path != null) {
-					this.path.takeStep(ds, enemy);
-				}
+			final Path _path = new AStarPathFinding().find(scene.getTileMap(),
+					enemy, scene.getPlayer());
+			if (_path != null) {
+				final EnemyStrategy strategy = PathfindingMoving.initialize(
+						this.cellWidth, this.cellHeight, _path);
+				strategy.remaining = _path.deltaColumn(enemy) == 0 ? this.cellHeight
+						: this.cellWidth;
+				enemy.changeStratety(strategy);
 			}
 		}
+
+	},
+	PathfindingMoving {
+
+		@Override
+		public void takeStep(final double delta, final Enemy enemy) {
+			if (this.remaining > 0) {
+				final double ds = delta * SPEED;
+				this.remaining -= ds;
+				this.path.takeStep(ds, enemy);
+			} else {
+				enemy.fixColumn(this.path.deltaColumn(enemy));
+				enemy.fixRow(this.path.deltaRow(enemy));
+				enemy.changeStratety(PathfindingLoockFor.initialize(
+						this.cellWidth, this.cellHeight));
+			}
+		}
+
 	},
 
 	Snowflake {
@@ -142,8 +140,15 @@ public enum EnemyStrategy {
 	protected double remaining;
 	protected double cellHeight;
 	protected double cellWidth;
+	protected Path path;
 
 	public abstract void takeStep(final double delta, Enemy enemy);
+
+	protected EnemyStrategy initialize(final double width, final double height,
+			final Path path) {
+		this.path = path;
+		return this.initialize(width, height);
+	}
 
 	private EnemyStrategy() {
 		Configs.injectAndReadBeans(this);
