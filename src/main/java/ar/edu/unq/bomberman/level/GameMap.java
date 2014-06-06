@@ -271,4 +271,8 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		return !this.isBlockPresent(row, column);
 	}
 
+	public void removeBlock(final Brick brick) {
+		this.blocksExistence[brick.getRow()][brick.getColumn()] = false;
+	}
+
 }

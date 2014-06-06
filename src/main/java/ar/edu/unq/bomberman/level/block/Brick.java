@@ -19,8 +19,8 @@ public class Brick extends Block {
 	protected void die() {
 		this.setAppearance(SpriteResources.animation("assets/block/block",
 				"block-die"));
-		this.destroy();
 		BrickPool.backToBricks(this);
+		this.getScene().removeBlock(this);
 	}
 
 }

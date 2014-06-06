@@ -3,7 +3,6 @@ package ar.edu.unq.bomberman.player;
 import ar.edu.unq.americana.DeltaState;
 import ar.edu.unq.americana.GameComponent;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
-import ar.edu.unq.americana.components.Score;
 import ar.edu.unq.americana.configs.Bean;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.constants.Key;
@@ -17,7 +16,6 @@ import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.Enemy;
-import ar.edu.unq.bomberman.level.items.Item;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 @Bean
@@ -96,12 +94,6 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.W)
 	private void goUp(final DeltaState state) {
 		this.positionState.applyUpAnimation(this);
-	}
-
-	@Events.ColitionCheck.ForGroup(collisionStrategy = CollisionStrategy.PerfectPixel, exclude = {
-			Score.class, Item.class, Enemy.class })
-	private void avoidBlockClollision(final GameComponent<?> target) {
-		this.alignVisualCloserTo(target);
 	}
 
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = ExplotionPart.class)
