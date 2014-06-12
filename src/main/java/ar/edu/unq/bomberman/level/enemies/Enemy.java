@@ -2,6 +2,7 @@ package ar.edu.unq.bomberman.level.enemies;
 
 import ar.edu.unq.americana.appearances.Animation;
 import ar.edu.unq.americana.appearances.Shape;
+import ar.edu.unq.americana.components.events.ScoreUpEvent;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
@@ -44,6 +45,7 @@ public abstract class Enemy extends PositionableComponent {
 	public void onAnimationEnd() {
 		if (!this.alive) {
 			EnemyPool.add(this);
+			this.fire(new ScoreUpEvent());
 		}
 	}
 

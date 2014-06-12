@@ -102,19 +102,4 @@ public class Explotion {
 			}
 		}
 	}
-	// private void addToRight(final int size, final int row, final int column,
-	// final GameMap scene) {
-	// final int fixedSize = (this.explosionSize - size) + 1;
-	// if (size > 1) {
-	// if (!scene.isBlockPresent(row, column)) {
-	// this.addToRight(size - 1, row, column + 1, scene);
-	// }
-	// scene.addExplotionPart(new ExplotionPart().initialize(row, column,
-	// fixedSize, "explotion-horizontal"));
-	// } else {
-	// scene.addExplotionPart(new ExplotionPart().initialize(row, column,
-	// fixedSize, "explotion-right"));
-	// }
-	// }
-
 }

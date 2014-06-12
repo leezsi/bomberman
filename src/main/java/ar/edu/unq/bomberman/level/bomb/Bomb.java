@@ -6,10 +6,12 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
+import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
 import ar.edu.unq.bomberman.components.PositionableComponent;
 import ar.edu.unq.bomberman.level.bomb.explotion.Explotion;
+import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 
 public class Bomb extends PositionableComponent {
 	private final int explosionSize;
@@ -53,6 +55,11 @@ public class Bomb extends PositionableComponent {
 		if (this.getScene().getPlayer().isBombHeart()) {
 			this.expode();
 		}
+	}
+
+	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.FromBounds, type = ExplotionPart.class)
+	private void explodeCollition(final ExplotionPart part) {
+		this.expode();
 	}
 
 	private void expode() {
