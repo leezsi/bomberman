@@ -6,7 +6,7 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.bomberman.level.GameMap;
 
-public abstract class ExplotionPart extends GameComponent<GameMap> {
+public class ExplotionPart extends GameComponent<GameMap> {
 
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
@@ -19,16 +19,10 @@ public abstract class ExplotionPart extends GameComponent<GameMap> {
 
 	private double remaindingTime;
 
-	protected abstract String spriteName();
-
-	public ExplotionPart initialize(final double row, final double column) {
-		return this.initialize(row, column, 0);
-	}
-
 	protected ExplotionPart initialize(final double row, final double column,
-			final double delta) {
+			final double delta, final String spriteName) {
 		this.setAppearance(SpriteResources.sprite("assets/bomb/bomb",
-				this.spriteName()).copy());
+				spriteName));
 		this.setX(column * CELL_WIDTH);
 		this.setY(row * CELL_HEIGHT);
 		this.remaindingTime = ANIMATION_DURATION * (Math.abs(delta) + 1);

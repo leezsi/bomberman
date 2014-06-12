@@ -1,7 +1,6 @@
 package ar.edu.unq.bomberman.level.bomb;
 
 import ar.edu.unq.americana.DeltaState;
-import ar.edu.unq.americana.GameComponent;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.constants.Key;
@@ -9,14 +8,12 @@ import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
-import ar.edu.unq.bomberman.level.GameMap;
+import ar.edu.unq.bomberman.components.PositionableComponent;
 import ar.edu.unq.bomberman.level.bomb.explotion.Explotion;
 
-public class Bomb extends GameComponent<GameMap> {
+public class Bomb extends PositionableComponent {
 	private final int explosionSize;
 	private double delay;
-	private int column;
-	private int row;
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -27,8 +24,10 @@ public class Bomb extends GameComponent<GameMap> {
 
 	public Bomb(final int row, final int column, final int explosionSize) {
 		this.explosionSize = explosionSize;
-		this.setX((this.column = column) * CELL_WIDTH);
-		this.setY((this.row = row) * CELL_HEIGHT);
+		this.setColumn(column);
+		this.setRow(row);
+		this.setX(column * CELL_WIDTH);
+		this.setY(row * CELL_HEIGHT);
 		this.setZ(ZINDEXS.bomb);
 		this.setCollitionGroup(COLLITION_GROUPS.player);
 		this.setAppearance(SpriteResources
@@ -58,7 +57,7 @@ public class Bomb extends GameComponent<GameMap> {
 
 	private void expode() {
 		this.getScene().removeBomb(this);
-		new Explotion(this.explosionSize, this.row, this.column)
+		new Explotion(this.explosionSize, this.getRow(), this.getColumn())
 				.addComponents(this.getScene());
 	}
 

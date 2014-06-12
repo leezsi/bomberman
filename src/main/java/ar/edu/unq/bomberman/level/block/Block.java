@@ -42,13 +42,4 @@ public class Block extends PositionableComponent {
 		this.fire(new ScoreUpEvent());
 	}
 
-	@Override
-	public void onAnimationEnd() {
-		this.destroy();
-	}
-
-	@Events.Update
-	public void update(final double delta) {
-	}
-
 }
