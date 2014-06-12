@@ -3,6 +3,8 @@ package ar.edu.unq.bomberman.player;
 import ar.edu.unq.americana.appearances.Animation;
 import ar.edu.unq.americana.appearances.Shape;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
+import ar.edu.unq.americana.events.ioc.EventManager;
+import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 public enum PlayerPositionState {
 
@@ -108,6 +110,56 @@ public enum PlayerPositionState {
 		public void update(final double delta, final Player player) {
 		}
 
+	},
+	DIEING {
+
+		@Override
+		public void applyRightStop(final Player player) {
+		}
+
+		@Override
+		public void applyUpAnimation(final Player player) {
+		}
+
+		@Override
+		public void applyUpStop(final Player player) {
+		}
+
+		@Override
+		public void applyDownAnimation(final Player player) {
+		}
+
+		@Override
+		public void applyDownStop(final Player player) {
+		}
+
+		@Override
+		public void applyLeftAnimation(final Player player) {
+		}
+
+		@Override
+		public void applyLeftStop(final Player player) {
+		}
+
+		@Override
+		public void applyRightAnimation(final Player player) {
+		}
+
+		@Override
+		public void applyDieingAnimation(final Player player) {
+
+		}
+
+		@Override
+		public void update(final double delta, final Player player) {
+			if (this.remaind > 0) {
+				this.remaind -= delta;
+			} else {
+				player.setPositionState(STAY
+						.initialize(this.width, this.height));
+				EventManager.fire(new PlayerLossLifeEvent());
+			}
+		}
 	};
 
 	protected double height;
@@ -213,4 +265,11 @@ public enum PlayerPositionState {
 	}
 
 	public static double DELTA = 2;
+
+	public void applyDieingAnimation(final Player player) {
+		player.setPositionState(DIEING);
+		final Animation animation = this.getAnimation("bomberman-die");
+		player.setAppearance(animation);
+		this.remaind(animation.getDuration());
+	}
 }

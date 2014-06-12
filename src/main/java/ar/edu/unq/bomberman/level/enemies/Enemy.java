@@ -1,20 +1,17 @@
 package ar.edu.unq.bomberman.level.enemies;
 
-import ar.edu.unq.americana.GameComponent;
 import ar.edu.unq.americana.appearances.Animation;
 import ar.edu.unq.americana.appearances.Shape;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
-import ar.edu.unq.americana.scenes.components.tilemap.Positionable;
 import ar.edu.unq.americana.utils.TrigonometricsAndRandomUtils;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
-import ar.edu.unq.bomberman.level.GameMap;
+import ar.edu.unq.bomberman.components.PositionableComponent;
 import ar.edu.unq.bomberman.level.bomb.Bomb;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 
-public abstract class Enemy extends GameComponent<GameMap> implements
-		Positionable {
+public abstract class Enemy extends PositionableComponent {
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -24,10 +21,6 @@ public abstract class Enemy extends GameComponent<GameMap> implements
 	private boolean alive;
 
 	private EnemyStrategy strategy;
-
-	private int column;
-
-	private int row;
 
 	public Enemy() {
 		this.strategy = this.movementStrategy();
@@ -68,8 +61,10 @@ public abstract class Enemy extends GameComponent<GameMap> implements
 	}
 
 	public void initialize(final int row, final int column) {
-		this.setX((this.column = column) * CELL_WIDTH);
-		this.setY((this.row = row) * CELL_HEIGHT);
+		this.setColumn(column);
+		this.setRow(row);
+		this.setX(column * CELL_WIDTH);
+		this.setY(row * CELL_HEIGHT);
 		this.alive = true;
 	}
 
@@ -77,26 +72,6 @@ public abstract class Enemy extends GameComponent<GameMap> implements
 	protected void update(final double delta) {
 		this.strategy.takeStep(delta, this);
 
-	}
-
-	@Override
-	public int getColumn() {
-		return this.column;
-	}
-
-	@Override
-	public int getRow() {
-		return this.row;
-	}
-
-	@Override
-	public void fixColumn(final int delta) {
-		this.column += delta;
-	}
-
-	@Override
-	public void fixRow(final int delta) {
-		this.row += delta;
 	}
 
 	public boolean isAlive() {

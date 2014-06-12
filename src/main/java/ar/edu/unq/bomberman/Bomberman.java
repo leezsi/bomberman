@@ -66,7 +66,7 @@ public class Bomberman extends Game {
 		if (this.currentLevel++ <= this.levelCount) {
 			final GameMap newLevel = GameMapProvider.level(this.currentLevel,
 					this, this.map);
-			newLevel.setPlayer(this.map.getPlayer());
+			newLevel.changPlayerStats(this.map.getPlayer());
 			this.setCurrentScene(this.map = newLevel);
 		}
 	}

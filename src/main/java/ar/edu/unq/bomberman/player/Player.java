@@ -1,7 +1,6 @@
 package ar.edu.unq.bomberman.player;
 
 import ar.edu.unq.americana.DeltaState;
-import ar.edu.unq.americana.GameComponent;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.configs.Bean;
 import ar.edu.unq.americana.configs.Property;
@@ -10,29 +9,26 @@ import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.camera.CameraUpdateEvent;
-import ar.edu.unq.americana.scenes.components.tilemap.Positionable;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
-import ar.edu.unq.bomberman.level.GameMap;
+import ar.edu.unq.bomberman.components.PositionableComponent;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.Enemy;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 @Bean
-public class Player extends GameComponent<GameMap> implements Positionable {
+public class Player extends PositionableComponent {
 
-	@Property("cell.width")
-	protected static double CELL_WIDTH;
+	public PlayerStats getStats() {
+		return this.stats;
+	}
 
-	@Property("cell.height")
-	protected static double CELL_HEIGHT;
+	public void setStats(final PlayerStats stats) {
+		this.stats = stats;
+	}
 
 	private PlayerPositionState positionState = PlayerPositionState.STAY
 			.initialize(CELL_WIDTH, CELL_HEIGHT);
-
-	private int remaindingBombs;
-
-	private int explosionSize = 1;
 
 	private boolean canPutBomb = true;
 
@@ -40,11 +36,11 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 
 	private double initialY;
 
-	private boolean bombHeart;
+	// private int row;
+	//
+	// private int column;
 
-	private int row;
-
-	private int column;
+	private PlayerStats stats;
 
 	public void setPositionState(final PlayerPositionState positionState) {
 		this.positionState = positionState;
@@ -54,19 +50,20 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 		this.setAppearance(SpriteResources.sprite("assets/bomberman/bomberman",
 				"bomberman-front1"));
 		this.setX(this.initialX = column * CELL_WIDTH);
-		this.column = column;
+		this.setColumn(column);
 		this.setY(this.initialY = row * CELL_HEIGHT);
-		this.row = row;
-		this.remaindingBombs = 1;
+		this.setRow(row);
 		this.setCollitionGroup(COLLITION_GROUPS.player);
+		this.resetStats();
+	}
+
+	public void resetStats() {
+		this.stats = new PlayerStats();
 	}
 
 	public Player initialize() {
 		this.setX(this.initialX);
 		this.setY(this.initialY);
-		this.explosionSize = 1;
-		this.remaindingBombs = 1;
-		this.bombHeart = false;
 		return this;
 	}
 
@@ -104,7 +101,8 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = Enemy.class)
 	private void enemyClollisionCheck(final Enemy enemy) {
 		if (enemy.isAlive()) {
-			this.fire(new PlayerLossLifeEvent());
+			this.positionState.applyDieingAnimation(this);
+			// this.fire(new PlayerLossLifeEvent());
 		}
 	}
 
@@ -116,14 +114,15 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 	@Events.Keyboard(key = Key.SPACE, type = EventType.Pressed)
 	private void putBomb(final DeltaState state) {
 		if (this.canPutBomb()) {
-			this.remaindingBombs--;
+			this.stats.putBomb();
 			this.setCanPutBomb(false);
-			this.getScene().putBomb(this.row, this.column, this.explosionSize);
+			this.getScene().putBomb(this.getRow(), this.getColumn(),
+					this.stats.getExplotionSize());
 		}
 	}
 
 	private boolean canPutBomb() {
-		return this.canPutBomb && (this.remaindingBombs > 0);
+		return this.canPutBomb && (this.stats.hasAnyBombs());
 	}
 
 	public void setCanPutBomb(final boolean canPutBomb) {
@@ -131,60 +130,17 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 	}
 
 	public void addBombRemaind() {
-		this.remaindingBombs++;
+		this.stats.bombExplode();
 	}
 
 	public void increseExplosionSize() {
-		this.explosionSize++;
-	}
-
-	public boolean isBombHeart() {
-		return this.bombHeart;
-	}
-
-	@Override
-	public int getColumn() {
-		return this.column;
-	}
-
-	@Override
-	public void fixColumn(final int delta) {
-		this.column += delta;
-	}
-
-	@Override
-	public int getRow() {
-		return this.row;
-	}
-
-	@Override
-	public void fixRow(final int delta) {
-		this.row += delta;
-	}
-
-	public void setBombHeart(final boolean bombHeart) {
-		this.bombHeart = bombHeart;
-	}
-
-	public int getRemaindingBombs() {
-		return this.remaindingBombs;
-	}
-
-	public void setRemaindingBombs(final int remaindingBombs) {
-		this.remaindingBombs = remaindingBombs;
-	}
-
-	public int getExplosionSize() {
-		return this.explosionSize;
-	}
-
-	public void setExplosionSize(final int explosionSize) {
-		this.explosionSize = explosionSize;
+		this.stats.increseExplosionSize();
 	}
 
 	@Override
 	public String toString() {
-		return "Player [row=" + this.row + ", column=" + this.column + "]";
+		return "Player [row=" + this.getRow() + ", column=" + this.getColumn()
+				+ "]";
 	}
 
 	@Override
@@ -193,4 +149,18 @@ public class Player extends GameComponent<GameMap> implements Positionable {
 		this.fire(new CameraUpdateEvent(dx, dy));
 		this.fire(new PlayerMoveEvent());
 	}
+
+	public boolean isBombHeart() {
+		return this.stats.isBombHeart();
+	}
+
+	public void addBombHeart() {
+		this.stats.addBombHeart();
+	}
+
+	@Property("cell.width")
+	protected static double CELL_WIDTH;
+
+	@Property("cell.height")
+	protected static double CELL_HEIGHT;
 }

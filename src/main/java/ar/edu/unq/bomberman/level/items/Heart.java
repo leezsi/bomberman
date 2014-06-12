@@ -6,7 +6,7 @@ public class Heart extends Item {
 
 	@Override
 	protected void applyEffect(final Player player) {
-		player.setBombHeart(true);
+		player.addBombHeart();
 	}
 
 	@Override

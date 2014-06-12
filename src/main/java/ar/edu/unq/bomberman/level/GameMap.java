@@ -7,7 +7,6 @@ import java.util.Set;
 
 import ar.edu.unq.americana.DeltaState;
 import ar.edu.unq.americana.GameComponent;
-import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.components.LifeCounter;
 import ar.edu.unq.americana.components.Score;
 import ar.edu.unq.americana.configs.Property;
@@ -19,13 +18,13 @@ import ar.edu.unq.americana.ia.pathfindier.TileMap;
 import ar.edu.unq.americana.scenes.camera.Camera;
 import ar.edu.unq.americana.scenes.camera.ICamera;
 import ar.edu.unq.americana.scenes.components.tilemap.BaseTileMap;
+import ar.edu.unq.americana.scenes.components.tilemap.ITileMapResourceProvider;
 import ar.edu.unq.americana.scenes.components.tilemap.ITileMapScene;
 import ar.edu.unq.americana.scenes.components.tilemap.Positionable;
+import ar.edu.unq.americana.scenes.components.tilemap.TileMapBackground;
 import ar.edu.unq.americana.scenes.normal.DefaultScene;
-import ar.edu.unq.bomberman.level.block.BorderBlock;
-import ar.edu.unq.bomberman.level.block.Brick;
+import ar.edu.unq.bomberman.level.block.Block;
 import ar.edu.unq.bomberman.level.block.BrickPool;
-import ar.edu.unq.bomberman.level.block.UnbreakableBlock;
 import ar.edu.unq.bomberman.level.bomb.Bomb;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.Enemy;
@@ -55,6 +54,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private final boolean[][] steelBlocksExistence;
 	private final ICamera camera = new Camera();
 	private final BaseTileMap tileMap;
+	private final ITileMapResourceProvider tileMapResourceProvider;
 
 	@SuppressWarnings("unchecked")
 	public GameMap(final double width, final double height,
@@ -62,11 +62,14 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		super(score, lifeCounter);
 		this.width = (int) width + 1;
 		this.height = (int) height + 1;
+		this.tileMapResourceProvider = new BombermanTileMapResourceProvider(
+				this.height + 1, this.width + 1);
+		this.tileMap = new BaseTileMap(this, (int) CELL_WIDTH,
+				(int) CELL_HEIGHT, this.tileMapResourceProvider);
 		this.elemements = new HashSet[this.height + 1][this.width + 1];
 		this.blocksExistence = new boolean[this.height][this.width];
 		this.steelBlocksExistence = new boolean[this.height][this.width];
 		this.addUnbreackableBlocks();
-		this.tileMap = new BaseTileMap(this);
 	}
 
 	public void addElement(final Positionable component) {
@@ -94,10 +97,11 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private void addSteelHorizontalLine(final int from, final int count,
 			final int row) {
 		for (int i = from; i < count; i++) {
-			final BorderBlock block = BrickPool
-					.<BorderBlock> get(BorderBlock.class);
-			block.initialize(row, i);
-			this.addElement(block);
+			// final BorderBlock block = BrickPool
+			// .<BorderBlock> get(BorderBlock.class);
+			// block.initialize(row, i);
+			// this.addElement(block);
+			this.tileMapResourceProvider.putAt(row, i, 2);
 		}
 
 	}
@@ -105,20 +109,20 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private void addSteelVerticalLine(final int from, final int count,
 			final int column) {
 		for (int i = from; i < count; i++) {
-			final BorderBlock block = BrickPool
-					.<BorderBlock> get(BorderBlock.class);
-			block.initialize(i, column);
-			this.addElement(block);
+			// final BorderBlock block = BrickPool
+			// .<BorderBlock> get(BorderBlock.class);
+			// block.initialize(i, column);
+			// this.addElement(block);
+			this.tileMapResourceProvider.putAt(i, column, 2);
 		}
 
 	}
 
 	@Events.Fired(PlayerLossLifeEvent.class)
 	private void playerLossLife(final PlayerLossLifeEvent event) {
-		this.getLifeCounter().lossLife();
-		this.player.setAppearance(SpriteResources.animation(
-				"assets/bomberman/bomberman", "bomberman-die"));
 		this.cleanExplotions();
+		this.getLifeCounter().lossLife();
+		this.player.initialize();
 	}
 
 	private void cleanExplotions() {
@@ -166,9 +170,8 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		return this.player;
 	}
 
-	public void setPlayer(final Player player) {
-		this.player.setExplosionSize(player.getExplosionSize());
-		this.player.setRemaindingBombs(player.getRemaindingBombs());
+	public void changPlayerStats(final Player player) {
+		this.player.setStats(player.getStats());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -180,19 +183,21 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	}
 
 	public void addSteelBlock(final int row, final int column) {
-		final UnbreakableBlock block = BrickPool
-				.<UnbreakableBlock> get(UnbreakableBlock.class);
-		this.addElement(block.initialize(row, column));
+		this.tileMapResourceProvider.putAt(row, column, 1);
 		this.steelBlocksExistence[row][column] = true;
 	}
 
 	public void addBlock(final int row, final int column) {
-		final Brick block = BrickPool.<Brick> get(Brick.class);
+		final Block block = BrickPool.instance().get();
 		this.addElement(block.initialize(row, column));
 		this.blocksExistence[row][column] = true;
 	}
 
 	public boolean isBlockPresent(final int row, final int column) {
+		if ((row < 1) || (column < 1) || (row >= this.height)
+				|| (column >= this.width)) {
+			return true;
+		}
 		return this.steelBlocksExistence[row][column]
 				|| this.blocksExistence[row][column];
 	}
@@ -264,15 +269,17 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	@Override
 	public boolean isAccessible(final int row, final int column) {
-		if ((row < 1) || (column < 1) || (row >= this.height)
-				|| (column >= this.width)) {
-			return false;
-		}
+
 		return !this.isBlockPresent(row, column);
 	}
 
-	public void removeBlock(final Brick brick) {
-		this.blocksExistence[brick.getRow()][brick.getColumn()] = false;
+	public void removeBlock(final Block block) {
+		this.blocksExistence[block.getRow()][block.getColumn()] = false;
+	}
+
+	@Override
+	public void addTileBackground(final TileMapBackground tileMapBackGround) {
+		this.addComponent(tileMapBackGround);
 	}
 
 }
