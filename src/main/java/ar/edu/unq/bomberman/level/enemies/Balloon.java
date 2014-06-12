@@ -22,6 +22,5 @@ public class Balloon extends Enemy {
 	protected IEnemyStrategy movementStrategy() {
 		return new RandomStrategy(this.getScene().getTileWidth(), this
 				.getScene().getTileHeight());
-		// return EnemyStrategy.Balloon.initialize(CELL_WIDTH, CELL_HEIGHT);
 	}
 }
