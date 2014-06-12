@@ -33,6 +33,22 @@
 		<ref to="snowflake-die" />
 	</animation>
 	
+	<animation name="coin" meantime="0.5" width="40" height="40">
+		<ref to="coin1" />
+		<ref to="coin2" />
+		<ref to="coin3" />
+		<ref to="coin4" />
+		<ref to="coin5" />
+	</animation>
+	<animation name="coin-die" meantime="0.5" width="40" height="40">
+		<ref to="coin1-die" />
+		<ref to="coin2-die" />
+		<ref to="coin3-die" />
+		<ref to="coin4-die" />
+		<ref to="coin5-die" />
+		<ref to="coin6-die" />
+		<ref to="coin7-die" />
+	</animation>
 
 	<sprites img="enemies.png">
 		<sprite name="ballon1">
@@ -86,6 +102,43 @@
 		</sprite>
 		<sprite name="snowflake-die">
 			<crop x="96" y="16" width="16" height="16" />
+		</sprite>
+		
+		<sprite name="coin1">
+			<crop x="0" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin2">
+			<crop x="16" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin3">
+			<crop x="32" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin4">
+			<crop x="48" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin5">
+			<crop x="64" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin1-die">
+			<crop x="80" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin2-die">
+			<crop x="96" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin3-die">
+			<crop x="112" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin4-die">
+			<crop x="128" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin5-die">
+			<crop x="144" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin6-die">
+			<crop x="160" y="32" width="16" height="16" />
+		</sprite>
+		<sprite name="coin7-die">
+			<crop x="176" y="32" width="16" height="16" />
 		</sprite>
 	</sprites>
 </resource>

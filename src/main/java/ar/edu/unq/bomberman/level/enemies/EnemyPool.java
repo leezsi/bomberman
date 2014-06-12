@@ -32,6 +32,18 @@ public class EnemyPool {
 				return Snowflake.class;
 			}
 		});
+		pools.put(Coin.class, new AbstractPool<Coin>() {
+
+			@Override
+			protected void initialize() {
+				this.initialize(15);
+			}
+
+			@Override
+			protected Class<Coin> getType() {
+				return Coin.class;
+			}
+		});
 	}
 
 	public static Enemy get(final Class<? extends Enemy> type) {

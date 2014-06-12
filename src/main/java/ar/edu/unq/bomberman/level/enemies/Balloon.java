@@ -3,6 +3,8 @@ package ar.edu.unq.bomberman.level.enemies;
 import ar.edu.unq.americana.appearances.Animation;
 import ar.edu.unq.americana.appearances.Shape;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
+import ar.edu.unq.bomberman.level.enemies.strategies.IEnemyStrategy;
+import ar.edu.unq.bomberman.level.enemies.strategies.RandomStrategy;
 
 public class Balloon extends Enemy {
 	@Override
@@ -17,7 +19,9 @@ public class Balloon extends Enemy {
 	}
 
 	@Override
-	protected EnemyStrategy movementStrategy() {
-		return EnemyStrategy.Balloon.initialize(CELL_WIDTH, CELL_HEIGHT);
+	protected IEnemyStrategy movementStrategy() {
+		return new RandomStrategy(this.getScene().getTileWidth(), this
+				.getScene().getTileHeight());
+		// return EnemyStrategy.Balloon.initialize(CELL_WIDTH, CELL_HEIGHT);
 	}
 }

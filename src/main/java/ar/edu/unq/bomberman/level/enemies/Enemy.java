@@ -11,6 +11,9 @@ import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.components.PositionableComponent;
 import ar.edu.unq.bomberman.level.bomb.Bomb;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
+import ar.edu.unq.bomberman.level.enemies.strategies.DieEnemyStrategy;
+import ar.edu.unq.bomberman.level.enemies.strategies.IEnemyStrategy;
+import ar.edu.unq.bomberman.level.enemies.strategies.NoneEnemyStrategy;
 
 public abstract class Enemy extends PositionableComponent {
 	@Property("cell.width")
@@ -21,21 +24,20 @@ public abstract class Enemy extends PositionableComponent {
 
 	private boolean alive;
 
-	private EnemyStrategy strategy;
+	private IEnemyStrategy strategy;
 
 	public Enemy() {
-		this.strategy = this.movementStrategy();
 		this.setAppearance(this.aliveAnimation());
 		this.setCollitionGroup(COLLITION_GROUPS.enemy);
 	}
 
-	protected abstract EnemyStrategy movementStrategy();
+	protected abstract IEnemyStrategy movementStrategy();
 
 	protected abstract Animation aliveAnimation();
 
 	protected void die() {
 		this.alive = false;
-		this.strategy = EnemyStrategy.NONE;
+		this.strategy = new DieEnemyStrategy();
 		this.setAppearance(this.onDieAppearance());
 	}
 
@@ -51,8 +53,8 @@ public abstract class Enemy extends PositionableComponent {
 
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.FromBounds, type = Bomb.class)
 	private void avoidCollitions(final Bomb bomb) {
-		final EnemyStrategy tmp = this.strategy;
-		this.strategy = EnemyStrategy.NONE;
+		final IEnemyStrategy tmp = this.strategy;
+		this.strategy = new NoneEnemyStrategy();
 		TrigonometricsAndRandomUtils.fixPositionTo(this, bomb);
 		this.strategy = tmp;
 	}
@@ -68,6 +70,7 @@ public abstract class Enemy extends PositionableComponent {
 		this.setX(column * CELL_WIDTH);
 		this.setY(row * CELL_HEIGHT);
 		this.alive = true;
+		this.strategy = this.movementStrategy();
 	}
 
 	@Events.Update
@@ -80,7 +83,7 @@ public abstract class Enemy extends PositionableComponent {
 		return this.alive;
 	}
 
-	public void changeStratety(final EnemyStrategy strategy) {
+	public void changeStratety(final IEnemyStrategy strategy) {
 		this.strategy = strategy;
 	}
 }

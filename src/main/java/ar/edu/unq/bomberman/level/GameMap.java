@@ -145,6 +145,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	public void removeExplotionPart(final ExplotionPart part) {
 		this.explotions.remove(part);
+		part.destroy();
 	}
 
 	@Events.Keyboard(type = EventType.Pressed, key = Key.ESC)
@@ -164,8 +165,8 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public void addEnemy(final int fixedRow, final int fixedColumn,
 			final Class<?> type) {
 		final Enemy enemy = EnemyPool.get((Class<? extends Enemy>) type);
-		enemy.initialize(fixedRow, fixedColumn);
 		this.addComponent(enemy);
+		enemy.initialize(fixedRow, fixedColumn);
 	}
 
 	public void addSteelBlock(final int row, final int column) {
@@ -266,6 +267,14 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	@Override
 	public void addTileBackground(final TileMapBackground tileMapBackGround) {
 		this.addComponent(tileMapBackGround);
+	}
+
+	public double getTileWidth() {
+		return CELL_WIDTH;
+	}
+
+	public double getTileHeight() {
+		return CELL_HEIGHT;
 	}
 
 }
