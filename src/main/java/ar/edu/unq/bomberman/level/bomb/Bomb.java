@@ -7,13 +7,14 @@ import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
+import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
-import ar.edu.unq.bomberman.components.PositionableComponent;
+import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.explotion.Explotion;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 
-public class Bomb extends PositionableComponent {
+public class Bomb extends PositionableComponent<GameMap> {
 	private final int explosionSize;
 	private double delay;
 	@Property("cell.width")

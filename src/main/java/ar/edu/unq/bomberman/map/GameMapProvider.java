@@ -42,12 +42,4 @@ public class GameMapProvider {
 		}
 		return map;
 	}
-
-	public static GameMap level(final int level, final Bomberman bomberman,
-			final GameMap map) {
-		final GameMap newMap = level(level, bomberman, map.getScore(),
-				map.getLifeCounter());
-		return newMap;
-	}
-
 }

@@ -6,16 +6,17 @@ import ar.edu.unq.americana.components.events.ScoreUpEvent;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
+import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
 import ar.edu.unq.americana.utils.TrigonometricsAndRandomUtils;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
-import ar.edu.unq.bomberman.components.PositionableComponent;
+import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.Bomb;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.strategies.DieEnemyStrategy;
 import ar.edu.unq.bomberman.level.enemies.strategies.IEnemyStrategy;
 import ar.edu.unq.bomberman.level.enemies.strategies.NoneEnemyStrategy;
 
-public abstract class Enemy extends PositionableComponent {
+public abstract class Enemy extends PositionableComponent<GameMap> {
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
 
@@ -47,6 +48,7 @@ public abstract class Enemy extends PositionableComponent {
 	public void onAnimationEnd() {
 		if (!this.alive) {
 			EnemyPool.add(this);
+			this.getScene().removeEnemy(this);
 			this.fire(new ScoreUpEvent());
 		}
 	}
@@ -65,12 +67,16 @@ public abstract class Enemy extends PositionableComponent {
 	}
 
 	public void initialize(final int row, final int column) {
-		this.setColumn(column);
-		this.setRow(row);
-		this.setX(column * CELL_WIDTH);
-		this.setY(row * CELL_HEIGHT);
+		this.resetPosition(row, column);
+		this.reset();
 		this.alive = true;
 		this.strategy = this.movementStrategy();
+	}
+
+	public void reset() {
+		this.resetPosition();
+		this.setX(this.getColumn() * this.getScene().getTileWidth());
+		this.setY(this.getRow() * this.getScene().getTileHeight());
 	}
 
 	@Events.Update

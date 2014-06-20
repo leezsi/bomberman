@@ -1,7 +1,9 @@
 package ar.edu.unq.bomberman.level;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ar.edu.unq.americana.DeltaState;
 import ar.edu.unq.americana.components.LifeCounter;
@@ -50,6 +52,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private ITileMapResourceProvider tileMapResourceProvider;
 	private boolean[][] accessibleCells;
 	private boolean[][] blocksExistence;
+	private final Set<Enemy> enemies = new HashSet<Enemy>();
 
 	public GameMap(final double width, final double height,
 			final Score<?> score, final LifeCounter<?> lifeCounter) {
@@ -107,9 +110,12 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		this.cleanExplotions();
 		this.getLifeCounter().lossLife();
 		this.player.initialize();
+		for (final Enemy enemy : this.enemies) {
+			enemy.reset();
+		}
 	}
 
-	private void cleanExplotions() {
+	public void cleanExplotions() {
 		for (final ExplotionPart part : this.explotions) {
 			part.destroy();
 		}
@@ -123,6 +129,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public void addPlayer(final int row, final int column) {
 		this.player = new Player(row, column);
 		this.addComponent(this.player);
+		this.player.initialize();
 	}
 
 	public void addExplotionPart(final ExplotionPart part) {
@@ -139,7 +146,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public void removeBomb(final Bomb bomb) {
 		bomb.destroy();
 		this.player.addBombRemaind();
-		this.accessibleCells[bomb.getRow()][bomb.getColumn()] = false;
+		this.accessibleCells[bomb.getRow()][bomb.getColumn()] = true;
 
 	}
 
@@ -167,6 +174,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		final Enemy enemy = EnemyPool.get((Class<? extends Enemy>) type);
 		this.addComponent(enemy);
 		enemy.initialize(fixedRow, fixedColumn);
+		this.enemies.add(enemy);
 	}
 
 	public void addSteelBlock(final int row, final int column) {
@@ -179,7 +187,6 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 		final Block block = BrickPool.instance().get();
 		this.addComponent(block.initialize(row, column));
 		this.accessibleCells[row][column] = false;
-		this.blocksExistence[row][column] = true;
 	}
 
 	public boolean isBlockPresent(final int row, final int column) {
@@ -262,6 +269,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	public void removeBlock(final Block block) {
 		this.blocksExistence[block.getRow()][block.getColumn()] = false;
+		this.accessibleCells[block.getRow()][block.getColumn()] = true;
 	}
 
 	@Override
@@ -275,6 +283,10 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	public double getTileHeight() {
 		return CELL_HEIGHT;
+	}
+
+	public void removeEnemy(final Enemy enemy) {
+		this.enemies.remove(enemy);
 	}
 
 }

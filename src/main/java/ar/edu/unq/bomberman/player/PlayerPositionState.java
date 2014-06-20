@@ -112,6 +112,11 @@ public enum PlayerPositionState {
 
 	},
 	DIEING {
+		@Override
+		public void onAnimationEnd(final Player player) {
+			player.setAppearance(this.getSprite("bomberman-front1"));
+			EventManager.fire(new PlayerLossLifeEvent());
+		}
 
 		@Override
 		public void applyRightStop(final Player player) {
@@ -152,13 +157,6 @@ public enum PlayerPositionState {
 
 		@Override
 		public void update(final double delta, final Player player) {
-			if (this.remaind > 0) {
-				this.remaind -= delta;
-			} else {
-				player.setPositionState(STAY
-						.initialize(this.width, this.height));
-				EventManager.fire(new PlayerLossLifeEvent());
-			}
 		}
 	};
 
@@ -270,6 +268,9 @@ public enum PlayerPositionState {
 		player.setPositionState(DIEING);
 		final Animation animation = this.getAnimation("bomberman-die");
 		player.setAppearance(animation);
-		this.remaind(animation.getDuration());
+	}
+
+	public void onAnimationEnd(final Player player) {
+
 	}
 }

@@ -9,15 +9,15 @@ import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.camera.CameraUpdateEvent;
+import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
-import ar.edu.unq.bomberman.components.PositionableComponent;
+import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.Enemy;
-import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 @Bean
-public class Player extends PositionableComponent {
+public class Player extends PositionableComponent<GameMap> {
 
 	public PlayerStats getStats() {
 		return this.stats;
@@ -32,14 +32,6 @@ public class Player extends PositionableComponent {
 
 	private boolean canPutBomb = true;
 
-	private double initialX;
-
-	private double initialY;
-
-	// private int row;
-	//
-	// private int column;
-
 	private PlayerStats stats;
 
 	public void setPositionState(final PlayerPositionState positionState) {
@@ -49,10 +41,7 @@ public class Player extends PositionableComponent {
 	public Player(final int row, final int column) {
 		this.setAppearance(SpriteResources.sprite("assets/bomberman/bomberman",
 				"bomberman-front1"));
-		this.setX(this.initialX = column * CELL_WIDTH);
-		this.setColumn(column);
-		this.setY(this.initialY = row * CELL_HEIGHT);
-		this.setRow(row);
+		this.resetPosition(row, column);
 		this.setCollitionGroup(COLLITION_GROUPS.player);
 		this.resetStats();
 	}
@@ -62,8 +51,11 @@ public class Player extends PositionableComponent {
 	}
 
 	public Player initialize() {
-		this.setX(this.initialX);
-		this.setY(this.initialY);
+		this.resetPosition();
+		this.setX(this.getColumn() * this.getScene().getTileWidth());
+		this.setY(this.getRow() * this.getScene().getTileHeight());
+		this.resetStats();
+		this.positionState = PlayerPositionState.STAY;
 		return this;
 	}
 
@@ -95,15 +87,24 @@ public class Player extends PositionableComponent {
 
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = ExplotionPart.class)
 	private void explotionClollisionCheck(final ExplotionPart explotion) {
-		this.fire(new PlayerLossLifeEvent());
+		this.getScene().cleanExplotions();
+		this.die();
+	}
+
+	private void die() {
+		this.positionState.applyDieingAnimation(this);
 	}
 
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = Enemy.class)
 	private void enemyClollisionCheck(final Enemy enemy) {
 		if (enemy.isAlive()) {
-			this.positionState.applyDieingAnimation(this);
-			// this.fire(new PlayerLossLifeEvent());
+			this.die();
 		}
+	}
+
+	@Override
+	public void onAnimationEnd() {
+		this.positionState.onAnimationEnd(this);
 	}
 
 	@Events.Update

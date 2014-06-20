@@ -51,6 +51,7 @@ public class Bomberman extends Game {
 		this.startGame();
 	}
 
+	@Override
 	public void startGame() {
 		this.currentLevel = 1;
 		this.score = new Score<GameMap>(10, font, Color.black);
@@ -65,7 +66,7 @@ public class Bomberman extends Game {
 	public void nextLevel(final LevelWinEvent event) {
 		if (this.currentLevel++ <= this.levelCount) {
 			final GameMap newLevel = GameMapProvider.level(this.currentLevel,
-					this, this.map);
+					this, this.score, this.lifeCounter);
 			newLevel.changPlayerStats(this.map.getPlayer());
 			this.setCurrentScene(this.map = newLevel);
 		}

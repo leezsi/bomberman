@@ -5,12 +5,13 @@ import ar.edu.unq.americana.components.events.ScoreUpEvent;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
+import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
-import ar.edu.unq.bomberman.components.PositionableComponent;
+import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 
-public class Block extends PositionableComponent {
+public class Block extends PositionableComponent<GameMap> {
 
 	@Property("cell.width")
 	protected static double CELL_WIDTH;
