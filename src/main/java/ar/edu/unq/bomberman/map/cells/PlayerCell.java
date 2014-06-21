@@ -32,9 +32,9 @@ public class PlayerCell extends Cell {
 	@Override
 	public void addContent(final GameMap map) {
 		if (this.type.equals(Player.class)) {
-			map.addPlayer(this.getFixedRow(), this.getFixedColumn());
+			map.addPlayer(this.getRow(), this.getColumn());
 		} else {
-			map.addEnemy(this.getFixedRow(), this.getFixedColumn(), this.type);
+			map.addEnemy(this.getRow(), this.getColumn(), this.type);
 		}
 
 	}

@@ -18,12 +18,12 @@ public abstract class Cell implements Serializable {
 		this.column = column;
 	}
 
-	public int getFixedRow() {
-		return this.row + 1;
+	public int getRow() {
+		return this.row;
 	}
 
-	public int getFixedColumn() {
-		return this.column + 1;
+	public int getColumn() {
+		return this.column;
 	}
 
 	public abstract void addContent(final GameMap map);

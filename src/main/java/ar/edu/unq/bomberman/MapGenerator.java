@@ -19,14 +19,12 @@ import ar.edu.unq.bomberman.map.GameMapXML;
  */
 public class MapGenerator {
 
-	private final BufferedImage baseImage;
 	private final BufferedImage bricksImage;
 	private final BufferedImage itemsImage;
 	private final BufferedImage playersImage;
 
-	public MapGenerator(final String level) throws IOException {
+	public MapGenerator(final String level) throws Exception {
 		final String basePath = "maps/images/map" + level + "/map-";
-		this.baseImage = this.readImage(basePath, "base");
 		this.bricksImage = this.readImage(basePath, "bricks");
 		this.itemsImage = this.readImage(basePath, "items");
 		this.playersImage = this.readImage(basePath, "players");
@@ -53,9 +51,8 @@ public class MapGenerator {
 
 	private void generateAs(final String level) throws Exception {
 		final GameMapXML map = new GameMapXML();
-		map.width = this.baseImage.getWidth();
-		map.height = this.baseImage.getHeight();
-		this.generateBaseMap(map.width, map.height, map);
+		map.width = this.bricksImage.getWidth();
+		map.height = this.bricksImage.getHeight();
 		this.generateBrickMap(map.width, map.height, map);
 		this.generateItemMap(map.width, map.height, map);
 		this.generatePlayerMap(map.width, map.height, map);
@@ -96,26 +93,10 @@ public class MapGenerator {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				final int pixel = this.bricksImage.getRGB(i, j);
-				if (((pixel >> 24) & 0xff) != 0) {
-					map.addBlock(j, i);
-				}
+				map.addBlock(j, i, pixel);
 			}
 		}
 		System.err.println("'brick' map process: done");
-	}
-
-	private void generateBaseMap(final double width, final double height,
-			final GameMapXML map) {
-		System.err.println("'base' map process: start");
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				final int pixel = this.baseImage.getRGB(i, j);
-				if (((pixel >> 24) & 0xff) != 0) {
-					map.addSteelBrick(j, i);
-				}
-			}
-		}
-		System.err.println("'base' map process: done");
 	}
 
 	private void serialize(final GameMapXML map, final String level)

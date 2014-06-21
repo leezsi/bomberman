@@ -11,6 +11,6 @@ public class SteelCell extends Cell {
 
 	@Override
 	public void addContent(final GameMap map) {
-		map.addSteelBlock(this.getFixedRow(), this.getFixedColumn());
+		map.addSteelBlock(this.getRow(), this.getColumn());
 	}
 }

@@ -12,7 +12,7 @@ public class BrickCell extends Cell {
 
 	@Override
 	public void addContent(final GameMap map) {
-		map.addBlock(this.getFixedRow(), this.getFixedColumn());
+		map.addBlock(this.getRow(), this.getColumn());
 	}
 
 }

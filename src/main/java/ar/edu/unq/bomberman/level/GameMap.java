@@ -1,5 +1,6 @@
 package ar.edu.unq.bomberman.level;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
+import ar.edu.unq.americana.extras.ImageExtras;
 import ar.edu.unq.americana.ia.pathfindier.Node;
 import ar.edu.unq.americana.ia.pathfindier.TileMap;
 import ar.edu.unq.americana.scenes.camera.Camera;
@@ -50,59 +52,25 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private final ICamera camera = new Camera();
 	private BaseTileMap tileMap;
 	private ITileMapResourceProvider tileMapResourceProvider;
-	private boolean[][] accessibleCells;
-	private boolean[][] blocksExistence;
 	private final Set<Enemy> enemies = new HashSet<Enemy>();
+	private BufferedImage densityMap;
 
 	public GameMap(final double width, final double height,
 			final Score<?> score, final LifeCounter<?> lifeCounter) {
 		super(score, lifeCounter);
-		this.width = (int) width + 1;
-		this.height = (int) height + 1;
+		// this.width = (int) width + 1;
+		// this.height = (int) height + 1;
+		this.width = (int) width;
+		this.height = (int) height;
 		this.initializeTileMap();
-		this.initializeMatrixs();
-		this.addUnbreackableBlocks();
-	}
-
-	private void initializeMatrixs() {
-		this.accessibleCells = new boolean[this.height][this.width];
-		this.blocksExistence = new boolean[this.height][this.width];
-		for (int c = 0; c < this.width; c++) {
-			for (int r = 0; r < this.height; r++) {
-				this.accessibleCells[r][c] = true;
-				this.blocksExistence[r][c] = false;
-			}
-		}
 	}
 
 	private void initializeTileMap() {
 		this.tileMapResourceProvider = new BombermanTileMapResourceProvider(
-				this.height + 1, this.width + 1);
+				this.height, this.width);
+		// this.height + 1, this.width + 1);
 		this.tileMap = new BaseTileMap(this, (int) CELL_WIDTH,
 				(int) CELL_HEIGHT, this.tileMapResourceProvider);
-	}
-
-	private void addUnbreackableBlocks() {
-		this.addSteelHorizontalLine(0, this.width, 0);
-		this.addSteelHorizontalLine(1, this.width + 1, this.height);
-		this.addSteelVerticalLine(1, this.height + 1, 0);
-		this.addSteelVerticalLine(0, this.height, this.width);
-	}
-
-	private void addSteelHorizontalLine(final int from, final int count,
-			final int row) {
-		for (int i = from; i < count; i++) {
-			this.tileMapResourceProvider.putAt(row, i, 2);
-		}
-
-	}
-
-	private void addSteelVerticalLine(final int from, final int count,
-			final int column) {
-		for (int i = from; i < count; i++) {
-			this.tileMapResourceProvider.putAt(i, column, 2);
-		}
-
 	}
 
 	@Events.Fired(PlayerLossLifeEvent.class)
@@ -140,13 +108,13 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public void putBomb(final int row, final int column, final int explosionSize) {
 		final Bomb bomb = new Bomb(row, column, explosionSize);
 		this.addComponent(bomb);
-		this.accessibleCells[row][column] = false;
+		// this.accessibleCells[row][column] = false;
 	}
 
 	public void removeBomb(final Bomb bomb) {
 		bomb.destroy();
 		this.player.addBombRemaind();
-		this.accessibleCells[bomb.getRow()][bomb.getColumn()] = true;
+		// this.accessibleCells[bomb.getRow()][bomb.getColumn()] = true;
 
 	}
 
@@ -179,14 +147,11 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	public void addSteelBlock(final int row, final int column) {
 		this.tileMapResourceProvider.putAt(row, column, 1);
-		this.accessibleCells[row][column] = false;
-		this.blocksExistence[row][column] = true;
 	}
 
 	public void addBlock(final int row, final int column) {
 		final Block block = BrickPool.instance().get();
 		this.addComponent(block.initialize(row, column));
-		this.accessibleCells[row][column] = false;
 	}
 
 	public boolean isBlockPresent(final int row, final int column) {
@@ -194,7 +159,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 				|| (column >= this.width)) {
 			return true;
 		}
-		return this.blocksExistence[row][column];
+		return !ImageExtras.isTransparent(this.densityMap, row, column);
 	}
 
 	public void addItem(final Class<? extends Item> type, final int fixedRow,
@@ -260,16 +225,20 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	@Override
 	public boolean isAccessible(final int row, final int column) {
-		if ((row < 1) || (column < 1) || (row >= this.height)
+		if ((row < 0) || (column < 0) || (row >= this.height)
 				|| (column >= this.width)) {
 			return false;
 		}
-		return this.accessibleCells[row][column];
+		// return ImageExtras.isTransparent(this.densityMap, row + 1, column +
+		// 1);
+		return ImageExtras.isTransparent(this.densityMap, row, column);
 	}
 
 	public void removeBlock(final Block block) {
-		this.blocksExistence[block.getRow()][block.getColumn()] = false;
-		this.accessibleCells[block.getRow()][block.getColumn()] = true;
+
+		// ImageExtras.clean(this.densityMap, block.getRow() + 1,
+		// block.getColumn() + 1);
+		ImageExtras.clean(this.densityMap, block.getRow(), block.getColumn());
 	}
 
 	@Override
@@ -287,6 +256,14 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	public void removeEnemy(final Enemy enemy) {
 		this.enemies.remove(enemy);
+	}
+
+	public void addEdgeBlock(final int row, final int column) {
+		this.tileMapResourceProvider.putAt(row, column, 2);
+	}
+
+	public void setDensityImage(final BufferedImage densityMap) {
+		this.densityMap = densityMap;
 	}
 
 }

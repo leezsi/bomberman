@@ -35,6 +35,6 @@ public class ItemCell extends Cell {
 
 	@Override
 	public void addContent(final GameMap map) {
-		map.addItem(this.type, this.getFixedRow(), this.getFixedColumn());
+		map.addItem(this.type, this.getRow(), this.getColumn());
 	}
 }
