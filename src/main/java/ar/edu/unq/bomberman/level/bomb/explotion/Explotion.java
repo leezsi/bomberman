@@ -88,17 +88,20 @@ public class Explotion {
 	private void doFill(final int size, final Function row,
 			final Function column, final GameMap scene, final String segment,
 			final String lastSegment) {
-		if (!scene.isBlockPresent(row.value(), column.value())) {
+		final int rowValue = row.value();
+		final int columnValue = column.value();
+
+		if (scene.isValidExplotionSite(rowValue, columnValue)) {
 			if (size > 1) {
-				scene.addExplotionPart(new ExplotionPart().initialize(
-						row.value(), column.value(), this.explosionSize - size,
-						segment));
-				this.doFill(size - 1, row.next(), column.next(), scene,
-						segment, lastSegment);
+				scene.addExplotionPart(new ExplotionPart().initialize(rowValue,
+						columnValue, this.explosionSize - size, segment));
+				if (!scene.isBreakableBlock(rowValue, columnValue)) {
+					this.doFill(size - 1, row.next(), column.next(), scene,
+							segment, lastSegment);
+				}
 			} else {
-				scene.addExplotionPart(new ExplotionPart().initialize(
-						row.value(), column.value(), this.explosionSize - size,
-						lastSegment));
+				scene.addExplotionPart(new ExplotionPart().initialize(rowValue,
+						columnValue, this.explosionSize - size, lastSegment));
 			}
 		}
 	}

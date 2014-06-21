@@ -1,5 +1,6 @@
 package ar.edu.unq.bomberman.level;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,8 +59,6 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public GameMap(final double width, final double height,
 			final Score<?> score, final LifeCounter<?> lifeCounter) {
 		super(score, lifeCounter);
-		// this.width = (int) width + 1;
-		// this.height = (int) height + 1;
 		this.width = (int) width;
 		this.height = (int) height;
 		this.initializeTileMap();
@@ -68,7 +67,6 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private void initializeTileMap() {
 		this.tileMapResourceProvider = new BombermanTileMapResourceProvider(
 				this.height, this.width);
-		// this.height + 1, this.width + 1);
 		this.tileMap = new BaseTileMap(this, (int) CELL_WIDTH,
 				(int) CELL_HEIGHT, this.tileMapResourceProvider);
 	}
@@ -108,14 +106,13 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public void putBomb(final int row, final int column, final int explosionSize) {
 		final Bomb bomb = new Bomb(row, column, explosionSize);
 		this.addComponent(bomb);
-		// this.accessibleCells[row][column] = false;
+		ImageExtras.put(this.densityMap, row, column, Color.GREEN);
 	}
 
 	public void removeBomb(final Bomb bomb) {
 		bomb.destroy();
 		this.player.addBombRemaind();
-		// this.accessibleCells[bomb.getRow()][bomb.getColumn()] = true;
-
+		ImageExtras.clean(this.densityMap, bomb.getRow(), bomb.getColumn());
 	}
 
 	public void removeExplotionPart(final ExplotionPart part) {
@@ -155,11 +152,10 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	}
 
 	public boolean isBlockPresent(final int row, final int column) {
-		if ((row < 1) || (column < 1) || (row >= this.height)
-				|| (column >= this.width)) {
-			return true;
-		}
-		return !ImageExtras.isTransparent(this.densityMap, row, column);
+		final Color pixel = ImageExtras.getColor(this.densityMap, row, column);
+		final boolean b = (pixel.getAlpha() != 0)
+				&& (!pixel.equals(Color.GREEN));
+		return b;
 	}
 
 	public void addItem(final Class<? extends Item> type, final int fixedRow,
@@ -225,19 +221,10 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	@Override
 	public boolean isAccessible(final int row, final int column) {
-		if ((row < 0) || (column < 0) || (row >= this.height)
-				|| (column >= this.width)) {
-			return false;
-		}
-		// return ImageExtras.isTransparent(this.densityMap, row + 1, column +
-		// 1);
 		return ImageExtras.isTransparent(this.densityMap, row, column);
 	}
 
 	public void removeBlock(final Block block) {
-
-		// ImageExtras.clean(this.densityMap, block.getRow() + 1,
-		// block.getColumn() + 1);
 		ImageExtras.clean(this.densityMap, block.getRow(), block.getColumn());
 	}
 
@@ -264,6 +251,16 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 
 	public void setDensityImage(final BufferedImage densityMap) {
 		this.densityMap = densityMap;
+	}
+
+	public boolean isValidExplotionSite(final int row, final int column) {
+		return ImageExtras.isTransparent(this.densityMap, row, column)
+				|| this.isBreakableBlock(row, column);
+	}
+
+	public boolean isBreakableBlock(final int row, final int column) {
+		return ImageExtras.getColor(this.densityMap, row, column).equals(
+				Color.RED);
 	}
 
 }

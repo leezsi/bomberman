@@ -33,7 +33,11 @@ public class GameMapXML implements Serializable {
 		case 0x00000000:
 			break;
 		default:
-			throw new GameException("unknow cell code:[" + pixel + "]");
+			throw new GameException("unknow cell code:[a:"
+					+ ((pixel >> 24) & 0x000000FF) + " r:"
+					+ ((pixel >> 16) & 0x000000FF) + " g:"
+					+ ((pixel >> 8) & 0x000000FF) + " b:"
+					+ (pixel & 0x000000FF) + "]");
 		}
 	}
 
