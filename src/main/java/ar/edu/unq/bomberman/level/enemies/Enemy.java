@@ -82,6 +82,7 @@ public abstract class Enemy extends PositionableComponent<GameMap> {
 		this.resetPosition();
 		this.setX(this.getColumn() * this.getScene().getTileWidth());
 		this.setY(this.getRow() * this.getScene().getTileHeight());
+		this.strategy = this.movementStrategy();
 	}
 
 	@Events.Update

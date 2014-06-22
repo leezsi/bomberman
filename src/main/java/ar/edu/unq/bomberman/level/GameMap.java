@@ -55,6 +55,7 @@ public class GameMap extends GameScene implements ITileMapScene {
 	private ITileMapResourceProvider tileMapResourceProvider;
 	private final Set<Enemy> enemies = new HashSet<Enemy>();
 	private BufferedImage densityMap;
+	private LifeCounter<?> lifeCounter;
 
 	public GameMap(final double width, final double height) {
 		this.width = (int) width;
@@ -72,7 +73,7 @@ public class GameMap extends GameScene implements ITileMapScene {
 	@Events.Fired(PlayerLossLifeEvent.class)
 	private void playerLossLife(final PlayerLossLifeEvent event) {
 		this.cleanExplotions();
-		// this.getLifeCounter().lossLife();
+		this.lifeCounter.lossLife();
 		this.player.initialize();
 		for (final Enemy enemy : this.enemies) {
 			enemy.reset();
@@ -263,7 +264,7 @@ public class GameMap extends GameScene implements ITileMapScene {
 
 	public void addCommonComponents(final Score<GameMap> score,
 			final LifeCounter<?> lifeCounter) {
-		this.addComponents(score, lifeCounter);
+		this.addComponents(score, this.lifeCounter = lifeCounter);
 	}
 
 }
