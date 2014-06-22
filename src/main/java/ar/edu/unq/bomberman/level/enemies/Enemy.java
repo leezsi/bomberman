@@ -7,10 +7,8 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
-import ar.edu.unq.americana.utils.TrigonometricsAndRandomUtils;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.level.GameMap;
-import ar.edu.unq.bomberman.level.bomb.Bomb;
 import ar.edu.unq.bomberman.level.bomb.explotion.ExplotionPart;
 import ar.edu.unq.bomberman.level.enemies.strategies.DieEnemyStrategy;
 import ar.edu.unq.bomberman.level.enemies.strategies.IEnemyStrategy;
@@ -53,17 +51,24 @@ public abstract class Enemy extends PositionableComponent<GameMap> {
 		}
 	}
 
-	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.FromBounds, type = Bomb.class)
-	private void avoidCollitions(final Bomb bomb) {
-		final IEnemyStrategy tmp = this.strategy;
-		this.strategy = new NoneEnemyStrategy();
-		TrigonometricsAndRandomUtils.fixPositionTo(this, bomb);
-		this.strategy = tmp;
-	}
+	//
+	// @Events.ColitionCheck.ForType(collisionStrategy =
+	// CollisionStrategy.FromBounds, type = Bomb.class)
+	// private void avoidCollitions(final Bomb bomb) {
+	// final IEnemyStrategy tmp = this.strategy;
+	// this.strategy = new NoneEnemyStrategy();
+	// TrigonometricsAndRandomUtils.fixPositionTo(this, bomb);
+	// this.strategy = tmp;
+	// }
 
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = ExplotionPart.class)
 	private void explotionClollisionCheck(final ExplotionPart explotion) {
 		this.die();
+	}
+
+	@Override
+	public void onSceneActivated() {
+		this.strategy = new NoneEnemyStrategy();
 	}
 
 	public void initialize(final int row, final int column) {

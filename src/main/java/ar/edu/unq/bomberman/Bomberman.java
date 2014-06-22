@@ -14,6 +14,7 @@ import ar.edu.unq.americana.utils.ResourcesUtils;
 import ar.edu.unq.bomberman.events.LevelWinEvent;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.map.GameMapProvider;
+import ar.edu.unq.bomberman.player.PlayerStats;
 
 public class Bomberman extends Game {
 
@@ -25,15 +26,13 @@ public class Bomberman extends Game {
 	private Dimension dimension;
 
 	private Score<GameMap> score;
+	private LifeCounter<?> lifeCounter;
 
 	private int currentLevel;
 
 	private final int levelCount = 2;
 
 	private GameMap map;
-
-	private LifeCounter<?> lifeCounter;
-
 	public static final Font font = ResourcesUtils.getFont(
 			"assets/fonts/Bombardier.ttf", Font.TRUETYPE_FONT, Font.BOLD, 50);
 
@@ -57,18 +56,23 @@ public class Bomberman extends Game {
 		this.score = new Score<GameMap>(10, font, Color.black);
 		this.lifeCounter = new LifeCounter<GameMap>(3, SpriteResources.sprite(
 				"assets/bomberman/bomberman", "bomberman-front1"));
-		this.map = GameMapProvider.level(this.currentLevel, this, this.score,
-				this.lifeCounter);
+		this.setUpMap(1);
+	}
+
+	private void setUpMap(final int level) {
+		GameMapProvider.setUp(level);
+		this.map = GameMapProvider.getMap();
+		this.map.addCommonComponents(this.score, this.lifeCounter);
 		this.setCurrentScene(this.map);
+		GameMapProvider.fill(this.map);
 	}
 
 	@Events.Fired(LevelWinEvent.class)
 	public void nextLevel(final LevelWinEvent event) {
 		if (this.currentLevel++ <= this.levelCount) {
-			final GameMap newLevel = GameMapProvider.level(this.currentLevel,
-					this, this.score, this.lifeCounter);
-			newLevel.changPlayerStats(this.map.getPlayer());
-			this.setCurrentScene(this.map = newLevel);
+			final PlayerStats stats = this.map.getPlayer().getStats();
+			this.setUpMap(this.currentLevel);
+			this.map.getPlayer().setStats(stats);
 		}
 	}
 

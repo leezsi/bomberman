@@ -6,4 +6,6 @@ public interface IEnemyStrategy {
 
 	public void takeStep(final double delta, final Enemy enemy);
 
+	public void reset();
+
 }

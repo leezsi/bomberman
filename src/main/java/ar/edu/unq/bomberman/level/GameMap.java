@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import ar.edu.unq.americana.DeltaState;
+import ar.edu.unq.americana.GameScene;
 import ar.edu.unq.americana.components.LifeCounter;
 import ar.edu.unq.americana.components.Score;
 import ar.edu.unq.americana.configs.Property;
@@ -23,7 +24,6 @@ import ar.edu.unq.americana.scenes.components.tilemap.BaseTileMap;
 import ar.edu.unq.americana.scenes.components.tilemap.ITileMapResourceProvider;
 import ar.edu.unq.americana.scenes.components.tilemap.ITileMapScene;
 import ar.edu.unq.americana.scenes.components.tilemap.TileMapBackground;
-import ar.edu.unq.americana.scenes.normal.DefaultScene;
 import ar.edu.unq.bomberman.level.block.Block;
 import ar.edu.unq.bomberman.level.block.BrickPool;
 import ar.edu.unq.bomberman.level.bomb.Bomb;
@@ -36,7 +36,7 @@ import ar.edu.unq.bomberman.pause.BombermanPauseScene;
 import ar.edu.unq.bomberman.player.Player;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
-public class GameMap extends DefaultScene implements ITileMapScene {
+public class GameMap extends GameScene implements ITileMapScene {
 
 	@Property("cam.delta")
 	private static double CAM_DELTA;
@@ -56,9 +56,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	private final Set<Enemy> enemies = new HashSet<Enemy>();
 	private BufferedImage densityMap;
 
-	public GameMap(final double width, final double height,
-			final Score<?> score, final LifeCounter<?> lifeCounter) {
-		super(score, lifeCounter);
+	public GameMap(final double width, final double height) {
 		this.width = (int) width;
 		this.height = (int) height;
 		this.initializeTileMap();
@@ -74,7 +72,7 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	@Events.Fired(PlayerLossLifeEvent.class)
 	private void playerLossLife(final PlayerLossLifeEvent event) {
 		this.cleanExplotions();
-		this.getLifeCounter().lossLife();
+		// this.getLifeCounter().lossLife();
 		this.player.initialize();
 		for (final Enemy enemy : this.enemies) {
 			enemy.reset();
@@ -261,6 +259,11 @@ public class GameMap extends DefaultScene implements ITileMapScene {
 	public boolean isBreakableBlock(final int row, final int column) {
 		return ImageExtras.getColor(this.densityMap, row, column).equals(
 				Color.RED);
+	}
+
+	public void addCommonComponents(final Score<GameMap> score,
+			final LifeCounter<?> lifeCounter) {
+		this.addComponents(score, lifeCounter);
 	}
 
 }
