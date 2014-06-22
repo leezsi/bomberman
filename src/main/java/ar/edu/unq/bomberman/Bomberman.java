@@ -10,6 +10,7 @@ import ar.edu.unq.americana.components.LifeCounter;
 import ar.edu.unq.americana.components.Score;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
+import ar.edu.unq.americana.events.ioc.EventManager;
 import ar.edu.unq.americana.utils.ResourcesUtils;
 import ar.edu.unq.bomberman.events.LevelWinEvent;
 import ar.edu.unq.bomberman.level.GameMap;
@@ -47,7 +48,8 @@ public class Bomberman extends Game {
 
 	@Override
 	protected void setUpScenes() {
-		this.startGame();
+		this.setCurrentScene(new BombermanGameScene());
+		// this.startGame();
 	}
 
 	@Override
@@ -57,6 +59,7 @@ public class Bomberman extends Game {
 		this.lifeCounter = new LifeCounter<GameMap>(3, SpriteResources.sprite(
 				"assets/bomberman/bomberman", "bomberman-front1"));
 		this.setUpMap(1);
+		EventManager.registry(this);
 	}
 
 	private void setUpMap(final int level) {
