@@ -8,6 +8,7 @@ import ar.edu.unq.americana.constants.Key;
 import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
+import ar.edu.unq.americana.scenes.camera.CameraResetEvent;
 import ar.edu.unq.americana.scenes.camera.CameraUpdateEvent;
 import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
@@ -18,6 +19,11 @@ import ar.edu.unq.bomberman.level.enemies.Enemy;
 
 @Bean
 public class Player extends PositionableComponent<GameMap> {
+	@Property("cell.width")
+	protected static double CELL_WIDTH;
+
+	@Property("cell.height")
+	protected static double CELL_HEIGHT;
 
 	public PlayerStats getStats() {
 		return this.stats;
@@ -54,15 +60,10 @@ public class Player extends PositionableComponent<GameMap> {
 		this.resetPosition();
 		this.setX(this.getColumn() * this.getScene().getTileWidth());
 		this.setY(this.getRow() * this.getScene().getTileHeight());
+		this.fire(new CameraResetEvent(this));
 		this.resetStats();
 		this.positionState = PlayerPositionState.STAY;
 		return this;
-	}
-
-	@Events.Keyboard(type = EventType.BeingHold, key = Key.Z)
-	private void goDie(final DeltaState state) {
-		this.setAppearance(SpriteResources.animation(
-				"assets/bomberman/bomberman", "bomberman-die"));
 	}
 
 	@Events.Keyboard(type = EventType.BeingHold, key = Key.D)
@@ -159,9 +160,4 @@ public class Player extends PositionableComponent<GameMap> {
 		this.stats.addBombHeart();
 	}
 
-	@Property("cell.width")
-	protected static double CELL_WIDTH;
-
-	@Property("cell.height")
-	protected static double CELL_HEIGHT;
 }

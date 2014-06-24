@@ -7,15 +7,18 @@ import java.awt.Font;
 import ar.edu.unq.americana.Game;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.components.LifeCounter;
+import ar.edu.unq.americana.components.LifeCounter.GameOverEvent;
 import ar.edu.unq.americana.components.Score;
 import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
+import ar.edu.unq.americana.events.annotations.Events.Fired;
 import ar.edu.unq.americana.events.ioc.EventManager;
 import ar.edu.unq.americana.utils.ResourcesUtils;
 import ar.edu.unq.bomberman.events.LevelWinEvent;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.map.GameMapProvider;
 import ar.edu.unq.bomberman.player.PlayerStats;
+import ar.edu.unq.bomberman.scenes.BombermanGameScene;
 
 public class Bomberman extends Game {
 
@@ -60,6 +63,12 @@ public class Bomberman extends Game {
 				"assets/bomberman/bomberman", "bomberman-front1"));
 		this.setUpMap(1);
 		EventManager.registry(this);
+	}
+
+	@Fired(GameOverEvent.class)
+	private void gameOver(final GameOverEvent event) {
+		this.setCurrentScene(new BombermanGameScene());
+
 	}
 
 	private void setUpMap(final int level) {

@@ -1,4 +1,4 @@
-package ar.edu.unq.bomberman;
+package ar.edu.unq.bomberman.scenes;
 
 import java.awt.Font;
 
@@ -7,9 +7,10 @@ import ar.edu.unq.americana.events.annotations.Events.Fired;
 import ar.edu.unq.americana.events.ioc.fired.FiredEvent;
 import ar.edu.unq.americana.game.events.GameResumeEvent;
 import ar.edu.unq.americana.scenes.menu.MenuGameScene;
+import ar.edu.unq.bomberman.Bomberman;
 
 public class BombermanGameScene extends MenuGameScene {
-	private static class GameCloseEvent extends FiredEvent {
+	protected static class GameCloseEvent extends FiredEvent {
 
 	}
 

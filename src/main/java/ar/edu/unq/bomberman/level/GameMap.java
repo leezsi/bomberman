@@ -32,9 +32,9 @@ import ar.edu.unq.bomberman.level.enemies.Enemy;
 import ar.edu.unq.bomberman.level.enemies.EnemyPool;
 import ar.edu.unq.bomberman.level.items.Item;
 import ar.edu.unq.bomberman.level.items.ItemPool;
-import ar.edu.unq.bomberman.pause.BombermanPauseScene;
 import ar.edu.unq.bomberman.player.Player;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
+import ar.edu.unq.bomberman.scenes.BombermanPauseScene;
 
 public class GameMap extends GameScene implements ITileMapScene {
 
@@ -265,6 +265,26 @@ public class GameMap extends GameScene implements ITileMapScene {
 	public void addCommonComponents(final Score<GameMap> score,
 			final LifeCounter<?> lifeCounter) {
 		this.addComponents(score, this.lifeCounter = lifeCounter);
+	}
+
+	@Override
+	public double getLeft() {
+		return super.getLeft() - (CELL_WIDTH / 2);
+	}
+
+	@Override
+	public double getRight() {
+		return super.getRight() + (CELL_WIDTH / 2);
+	}
+
+	@Override
+	public double getTop() {
+		return super.getTop() - (CELL_HEIGHT / 2);
+	}
+
+	@Override
+	public double getBottom() {
+		return super.getBottom() + (CELL_HEIGHT / 2);
 	}
 
 }
