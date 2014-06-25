@@ -13,7 +13,7 @@ public class AStarSelector implements IPathSelector {
 	@Override
 	public Path getDestination(final Enemy enemy) {
 		final GameMap scene = enemy.getScene();
-		if (TrigonometricsAndRandomUtils.manhattan(enemy, scene.getPlayer()) <= 5) {
+		if (TrigonometricsAndRandomUtils.manhattan(enemy, scene.getPlayer()) <= 10) {
 			final Path path = new AStarPathFinding().find(scene.getTileMap(),
 					enemy, scene.getPlayer());
 			this.time = scene.getTileWidth();

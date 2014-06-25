@@ -33,8 +33,9 @@ public class Player extends PositionableComponent<GameMap> {
 		this.stats = stats;
 	}
 
-	private PlayerPositionState positionState = PlayerPositionState.STAY
-			.initialize(CELL_WIDTH, CELL_HEIGHT);
+	private PlayerPositionState positionState =
+
+	PlayerPositionState.STAY.initialize(CELL_WIDTH, CELL_HEIGHT);
 
 	private boolean canPutBomb = true;
 
@@ -63,6 +64,7 @@ public class Player extends PositionableComponent<GameMap> {
 		this.fire(new CameraResetEvent(this));
 		this.resetStats();
 		this.positionState = PlayerPositionState.STAY;
+
 		return this;
 	}
 
