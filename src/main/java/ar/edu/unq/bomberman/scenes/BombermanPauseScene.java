@@ -14,6 +14,10 @@ public class BombermanPauseScene extends MenuGameScene {
 
 	}
 
+	public BombermanPauseScene() {
+		Bomberman.PAUSE_SCENE.play();
+	}
+
 	@Override
 	protected String logoResourcePath() {
 		return "assets/menues/logo.png";

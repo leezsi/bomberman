@@ -8,6 +8,7 @@ import ar.edu.unq.americana.events.annotations.EventType;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
+import ar.edu.unq.bomberman.Bomberman;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
 import ar.edu.unq.bomberman.level.GameMap;
@@ -46,11 +47,6 @@ public class Bomb extends PositionableComponent<GameMap> {
 		}
 	}
 
-	@Events.Fired(PlayerMoveEvent.class)
-	private void changeGroupCollision(final PlayerMoveEvent event) {
-		this.setCollitionGroup(COLLITION_GROUPS.bomb);
-	}
-
 	@Events.Keyboard(key = Key.P, type = EventType.Pressed)
 	private void die(final DeltaState state) {
 		if (this.getScene().getPlayer().isBombHeart()) {
@@ -67,6 +63,7 @@ public class Bomb extends PositionableComponent<GameMap> {
 		this.getScene().removeBomb(this);
 		new Explotion(this.explosionSize, this.getRow(), this.getColumn())
 				.addComponents(this.getScene());
+		Bomberman.BOMB_EXPLOTION.play();
 	}
 
 }

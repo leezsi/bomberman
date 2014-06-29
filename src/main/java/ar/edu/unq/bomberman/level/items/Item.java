@@ -6,6 +6,7 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.components.tilemap.Positionable;
+import ar.edu.unq.bomberman.Bomberman;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
 import ar.edu.unq.bomberman.level.GameMap;
@@ -42,6 +43,7 @@ public abstract class Item extends GameComponent<GameMap> implements
 	private void playerCollision(final Player player) {
 		this.applyEffect(player);
 		this.backToPool();
+		Bomberman.ITEM_GET.play();
 	}
 
 	protected abstract void applyEffect(Player player);

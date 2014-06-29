@@ -11,6 +11,7 @@ import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.camera.CameraResetEvent;
 import ar.edu.unq.americana.scenes.camera.CameraUpdateEvent;
 import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
+import ar.edu.unq.bomberman.Bomberman;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.level.bomb.PlayerMoveEvent;
@@ -96,6 +97,7 @@ public class Player extends PositionableComponent<GameMap> {
 
 	private void die() {
 		this.positionState.applyDieingAnimation(this);
+		Bomberman.PLAYER_DIE.play();
 	}
 
 	@Events.ColitionCheck.ForType(collisionStrategy = CollisionStrategy.PerfectPixel, type = Enemy.class)

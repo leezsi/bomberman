@@ -6,6 +6,7 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.ioc.collision.CollisionStrategy;
 import ar.edu.unq.americana.scenes.components.tilemap.PositionableComponent;
+import ar.edu.unq.bomberman.Bomberman;
 import ar.edu.unq.bomberman.COLLITION_GROUPS;
 import ar.edu.unq.bomberman.ZINDEXS;
 import ar.edu.unq.bomberman.level.GameMap;
@@ -40,6 +41,7 @@ public class Block extends PositionableComponent<GameMap> {
 				"block-die"));
 		BrickPool.instance().add(this);
 		this.getScene().removeBlock(this);
+		Bomberman.BLOCK_DIE.play();
 		this.fire(new ScoreUpEvent());
 	}
 

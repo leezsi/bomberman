@@ -13,7 +13,9 @@ import ar.edu.unq.americana.configs.Property;
 import ar.edu.unq.americana.events.annotations.Events;
 import ar.edu.unq.americana.events.annotations.Events.Fired;
 import ar.edu.unq.americana.events.ioc.EventManager;
+import ar.edu.unq.americana.sound.Sound;
 import ar.edu.unq.americana.utils.ResourcesUtils;
+import ar.edu.unq.americana.utils.SpriteSoundUtils;
 import ar.edu.unq.bomberman.events.LevelWinEvent;
 import ar.edu.unq.bomberman.level.GameMap;
 import ar.edu.unq.bomberman.map.GameMapProvider;
@@ -37,6 +39,14 @@ public class Bomberman extends Game {
 	private final int levelCount = 2;
 
 	private GameMap map;
+	public static Sound BUTTON_CLICK;
+	public static Sound PAUSE_SCENE;
+	public static Sound PLAYER_DIE;
+	public static Sound ITEM_GET;
+	public static Sound BOMB_EXPLOTION;
+	public static Sound BOMB_SET;
+	public static Sound BLOCK_DIE;
+	public static Sound PLAYER_STEP_SOUND;
 	public static final Font font = ResourcesUtils.getFont(
 			"assets/fonts/Bombardier.ttf", Font.TRUETYPE_FONT, Font.BOLD, 50);
 
@@ -47,6 +57,19 @@ public class Bomberman extends Game {
 
 	@Override
 	protected void initializeResources() {
+		PLAYER_STEP_SOUND = SpriteSoundUtils
+				.getSound("assets/sounds/game/player_step.wav");
+		PLAYER_DIE = SpriteSoundUtils
+				.getSound("assets/sounds/game/player_die.wav");
+		BLOCK_DIE = SpriteSoundUtils
+				.getSound("assets/sounds/game/block_die.wav");
+		BOMB_SET = SpriteSoundUtils.getSound("assets/sounds/game/bomb_set.wav");
+		BOMB_EXPLOTION = SpriteSoundUtils
+				.getSound("assets/sounds/game/bomb_explotion.wav");
+		ITEM_GET = SpriteSoundUtils.getSound("assets/sounds/game/item_get.wav");
+		PAUSE_SCENE = SpriteSoundUtils.getSound("assets/sounds/menu/pause.wav");
+		BUTTON_CLICK = SpriteSoundUtils
+				.getSound("assets/sounds/menu/select.wav");
 	}
 
 	@Override

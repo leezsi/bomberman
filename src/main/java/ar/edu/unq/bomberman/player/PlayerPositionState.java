@@ -4,6 +4,7 @@ import ar.edu.unq.americana.appearances.Animation;
 import ar.edu.unq.americana.appearances.Shape;
 import ar.edu.unq.americana.appearances.utils.SpriteResources;
 import ar.edu.unq.americana.events.ioc.EventManager;
+import ar.edu.unq.bomberman.Bomberman;
 import ar.edu.unq.bomberman.player.events.PlayerLossLifeEvent;
 
 public enum PlayerPositionState {
@@ -28,6 +29,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(dx, 0);
 			} else {
+				Bomberman.PLAYER_STEP_SOUND.play();
 				this.applyRightStop(player);
 			}
 		};
@@ -52,6 +54,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(-dx, 0);
 			} else {
+				Bomberman.PLAYER_STEP_SOUND.play();
 				this.applyLeftStop(player);
 			}
 		}
@@ -76,6 +79,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(0, -dy);
 			} else {
+				Bomberman.PLAYER_STEP_SOUND.play();
 				this.applyUpStop(player);
 			}
 		}
@@ -100,6 +104,7 @@ public enum PlayerPositionState {
 			if (this.remaind > 0) {
 				player.move(0, dy);
 			} else {
+				Bomberman.PLAYER_STEP_SOUND.play();
 				this.applyDownStop(player);
 			}
 		}

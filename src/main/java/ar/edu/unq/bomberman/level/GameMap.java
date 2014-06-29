@@ -24,6 +24,7 @@ import ar.edu.unq.americana.scenes.components.tilemap.BaseTileMap;
 import ar.edu.unq.americana.scenes.components.tilemap.ITileMapResourceProvider;
 import ar.edu.unq.americana.scenes.components.tilemap.ITileMapScene;
 import ar.edu.unq.americana.scenes.components.tilemap.TileMapBackground;
+import ar.edu.unq.bomberman.Bomberman;
 import ar.edu.unq.bomberman.level.block.Block;
 import ar.edu.unq.bomberman.level.block.BrickPool;
 import ar.edu.unq.bomberman.level.bomb.Bomb;
@@ -106,6 +107,7 @@ public class GameMap extends GameScene implements ITileMapScene {
 		final Bomb bomb = new Bomb(row, column, explosionSize);
 		this.addComponent(bomb);
 		ImageExtras.put(this.densityMap, row, column, Color.GREEN);
+		Bomberman.BOMB_SET.play();
 	}
 
 	public void removeBomb(final Bomb bomb) {
