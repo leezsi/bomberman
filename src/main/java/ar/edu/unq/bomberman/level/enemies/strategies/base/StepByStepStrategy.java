@@ -6,8 +6,7 @@ import ar.edu.unq.bomberman.level.enemies.strategies.IEnemyStrategy;
 import ar.edu.unq.bomberman.level.enemies.strategies.selectors.IPathSelector;
 
 public class StepByStepStrategy implements IEnemyStrategy {
-
-	private static final double SPEED = 10;
+	private static double SPEED = 10;
 	private final IPathSelector selector;
 	private double remaining;
 	private Path destination;

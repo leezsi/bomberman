@@ -164,4 +164,10 @@ public class Player extends PositionableComponent<GameMap> {
 		this.stats.addBombHeart();
 	}
 
+	public void fixPosition() {
+		final double x = this.getColumn() * this.getScene().getTileWidth();
+		final double y = this.getRow() * this.getScene().getTileHeight();
+		this.move(x - this.getX(), y - this.getY());
+	}
+
 }

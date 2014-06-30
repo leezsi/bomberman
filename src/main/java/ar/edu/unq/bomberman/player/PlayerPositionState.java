@@ -15,6 +15,7 @@ public enum PlayerPositionState {
 			player.setAppearance(this.getSprite("bomberman-right1"));
 			player.setPositionState(STAY);
 			player.fixColumn(1);
+			player.fixPosition();
 		}
 
 		@Override
@@ -45,6 +46,8 @@ public enum PlayerPositionState {
 			player.setAppearance(this.getSprite("bomberman-left1"));
 			player.setPositionState(STAY);
 			player.fixColumn(-1);
+			player.fixPosition();
+
 		}
 
 		@Override
@@ -70,6 +73,8 @@ public enum PlayerPositionState {
 			player.setAppearance(this.getSprite("bomberman-back1"));
 			player.setPositionState(STAY);
 			player.fixRow(-1);
+			player.fixPosition();
+
 		}
 
 		@Override
@@ -95,6 +100,8 @@ public enum PlayerPositionState {
 			player.setAppearance(this.getSprite("bomberman-front1"));
 			player.setPositionState(STAY);
 			player.fixRow(1);
+			player.fixPosition();
+
 		}
 
 		@Override
